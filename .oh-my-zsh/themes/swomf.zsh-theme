@@ -1,11 +1,11 @@
 # Based on rkj-repos and heapbytes
-# Compatible with Termux
+# Compatible with Termux.
 
 # tun0, which would refer to the IP of the vpn tunnel, is excluded
 # `ifconfig wlan0` is replaced with `grep` due to Termux permission limitations
 get_ip_address() {
   if [[ -n "$(ifconfig 2>/dev/null | grep wlan0 -A1 | grep inet)" ]]; then
-    echo " $(ifconfig 2>/dev/null | grep wlan0 -A1 | awk '/inet / {print $2}')"
+    echo "$(ifconfig 2>/dev/null | grep wlan0 -A1 | awk '/inet / {print $2}')"
   else
     echo ""
   fi
@@ -37,10 +37,14 @@ function mygit() {
 function retcode() {}
 
 # Main
-PROMPT=$'%{$fg_bold[blue]%}╭─[%{$fg_bold[green]%}%n%b%{$fg[black]%}@%{$fg[cyan]%}%m%{$fg_bold[cyan]%}$(get_ip_address)%{$reset_color%}%{$fg_bold[blue]%}]%{$reset_color%} %{$fg[blue]%}%~ %{$fg_bold[green]%}$(mygit)$(hg_prompt_info)%{$reset_color%}
+PROMPT=$'%{$fg_bold[blue]%}╭─[%{$fg_bold[green]%}$(get_ip_address)%{$reset_color%}%{$fg_bold[blue]%}]%{$reset_color%} %{$fg[blue]%}%~ %{$fg_bold[green]%}$(mygit)$(hg_prompt_info)%{$reset_color%}
 %{$fg_bold[blue]%}╰─>%{$reset_color%} '
 PS2=$' \e[0;34m%}%B>%{\e[0m%}%b '
 
+# Alternate with user@host
+# PROMPT=$'%{$fg_bold[blue]%}╭─[%{$fg_bold[green]%}%n%b%{$fg[black]%}@%{$fg[cyan]%}%m%{$fg_bold[cyan]%}$(get_ip_address)%{$reset_color%}%{$fg_bold[blue]%}]%{$reset_color%} %{$fg[blue]%}%~ %{$fg_bold[green]%}$(mygit)$(hg_prompt_info)%{$reset_color%}
+# %{$fg_bold[blue]%}╰─>%{$reset_color%} '
+# PS2=$' \e[0;34m%}%B>%{\e[0m%}%b '
 
 # Alternate for Termux
 # PROMPT=$'%{$fg_bold[blue]%}╭─[%{$fg[cyan]%}$(termux_get_ip_address)%{$fg_bold[blue]%}]%{$reset_color%} %{$fg[cyan]%}%~ %{$fg_bold[green]%}$(mygit)$(hg_prompt_info)%{$reset_color%}
