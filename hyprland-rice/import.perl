@@ -22,6 +22,10 @@ my %dot_locations = (
   ]
 );
 
+my @etc_locations = (
+  "keyd"
+);
+
 foreach my $dot_dir (keys %dot_locations) {
   foreach my $dot (@{$dot_locations{$dot_dir}}) {
     my $dotless_dir = ($dot_dir =~ /^\./ ? substr($dot_dir, 1) : $dot_dir);
@@ -37,4 +41,18 @@ foreach my $dot_dir (keys %dot_locations) {
       --exclude=\".git*\" \\
       \"$ENV{HOME}/$dot_dir/$dot\" \"$script_dir/$dotless_dir\"");
   }
+}
+
+make_path("$script_dir/etc") unless (-d "$script_dir/etc");
+foreach my $etc (@etc_locations) {
+  print "Syncing $etc -> $script_dir/etc\n";
+  system("
+    rsync \\
+    --archive \\
+    --verbose \\
+    --human-readable \\
+    --progress \\
+    --delete \\
+    --exclude=\".git*\" \\
+    \"/etc/$etc\" \"$script_dir/etc\"");
 }
