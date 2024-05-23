@@ -1,15 +1,10 @@
+# hyprland ags rice
 
-# Starter Config
+Features:
 
-if suggestions don't work, first make sure
-you have TypeScript LSP working in your editor
+bar.ts
+* numbers on the top left
+* volume icon at bottom left (just an indicator)
+* mmmm-dd-yy hh:mm:ss day clock
 
-if you do not want typechecking only suggestions
-
-```json
-// tsconfig.json
-"checkJs": false
-```
-
-types are symlinked to:
-/usr/share/com.github.Aylur.ags/types
+You need Nimbus Sans.

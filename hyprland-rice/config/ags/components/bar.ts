@@ -1,7 +1,7 @@
-import Gtk from "types/@girs/gtk-3.0/gtk-3.0"
-
 const hyprland = await Service.import("hyprland")
 const audio = await Service.import("audio")
+const battery = await Service.import("battery")
+const systemtray = await Service.import("systemtray")
 
 function Workspaces() {
   const activeId = hyprland.active.workspace.bind("id")
@@ -28,25 +28,102 @@ function Top() {
   })
 }
 
-const time = Variable("", {
-  poll: [1000, 'date "+%Y-%m-%d %H:%M:%S %a"'],
-})
-
-function Clock() {
-  return Widget.Label({
-    vpack: 'end',
-    hpack: 'center',
-    useMarkup: true,
-    label: time.bind()
-      .as(t => 
-        " <span face='Nimbus Sans' font-weight='normal'>"
-        + t
-        + "</span> "
-      ),
-    angle: 90,
-    css: "font-size: 11px;",
+function SysTray() {
+  const items = systemtray.bind("items")
+  .as(items => items.map(item => Widget.Button({
+    child: Widget.Icon({
+      icon: item.bind("icon"),
+      size: 10,
+      css: "padding: 0px; margin: 0px;",
+    }),
+    on_primary_click: (_, event) => item.activate(event),
+    on_secondary_click: (_, event) => item.openMenu(event),
+    tooltip_markup: item.bind("tooltip_markup"),
+  })))
+      
+  return Widget.Box({
+    vertical: true,
+    children: items,
   })
 }
+
+const divide = ([total, free]) => free / total;
+
+// function cpuProgress() {
+//   const cpu = Variable(0, {
+//     poll: [2000, 'top -b -n 1', out => divide([100, out.split('\n')
+//       .find(line => line.includes('Cpu(s)'))
+//       .split(/\s+/)[1]
+//       .replace(',', '.')])],
+//   });
+
+//   return Widget.Label({
+//     angle: 90,
+//     vpack: "end",
+//     hpack: "center",
+//     useMarkup: true,
+//     label: cpu.bind().as(c => `${Math.floor(c * 100) / 100}%`),
+//     class_name: "cpu",
+//   })
+// }
+
+// function ramProgress() {
+//   const ram = Variable(0, {
+//     poll: [2000, 'free', out => {
+//       const line = out.split('\n') || ""
+//         .find(line => line.includes('Mem:'));
+//       const [total, free] = line.split(/\s+/).splice(1, 2).map(x => parseInt(x.replace(/[^\d]/g, ''), 10));
+//       return divide([total, free]);
+//     }],
+//   });
+//   Widget.Label({
+//     label: ram.bind().as(r => `${Math.floor(r * 100) / 100}%`),
+//   })
+// }
+
+function BatteryLabel() {
+  return Widget.Box({
+    vertical: true,
+    children: [
+      Widget.Label({
+        angle: 90,
+        vpack: "end",
+        hpack: "center",
+        useMarkup: true,
+        label: battery.bind("percent").as(p =>
+          " <span face='Nimbus Sans' font-weight='normal'>"
+          + p
+          + "</span> "),
+        class_name: "battery",
+        css: "font-size: 11px;",
+      }),
+      Widget.Icon({
+        icon: battery.bind("percent").as(p =>
+          `battery-level-${Math.floor(p / 10) * 10}-symbolic`),
+      })
+    ]
+  })
+}
+//   return Widget.Label({
+//     angle: 90,
+//     vpack: "end",
+//     hpack: "center",
+//     useMarkup: true,
+//     label: battery.bind("percent").as(p =>
+//       " <span face='Nimbus Sans' font-weight='normal'>"
+//       + p
+//       + "</span> "),
+//     class_name: "battery",
+//     css: "font-size: 11px;",
+//   })
+// }
+
+// function BatteryIcon() {
+//   return Widget.Icon({
+//     icon: battery.bind("percent").as(p =>
+//       `battery-level-${Math.floor(p / 10) * 10}-symbolic`),
+//   })
+// }
 
 function Volume() {
   const icons = {
@@ -87,6 +164,27 @@ function Volume() {
   })
 }
 
+const time = Variable("", {
+  poll: [1000, 'date "+%Y-%m-%d %H:%M:%S %a"'],
+})
+
+function Clock() {
+  return Widget.Label({
+    vpack: 'end',
+    hpack: 'center',
+    useMarkup: true,
+    label: time.bind()
+      .as(t =>
+        " <span face='Nimbus Sans' font-weight='normal'>"
+        + t
+        + "</span> "
+      ),
+    angle: 90,
+    css: "font-size: 11px;",
+  })
+}
+
+
 function Bottom() {
   return Widget.Box({
     // hpack: "center",
@@ -94,6 +192,10 @@ function Bottom() {
     spacing: 4,
     vertical: true,
     children: [
+      SysTray(),
+      // cpuProgress(),
+      // ramProgress(),
+      BatteryLabel(),
       Volume(),
       Clock(),
     ],
