@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Flips the screen counterclockwise on a generic
+# Wayland environment.
+# I don't use this since I can just hook up a
+# arrow key keybind anyway.
+
+main_monitor="LVDS-1"
+
+case $(wlr-randr | awk '/Transform/ {print $2}') in
+  normal)
+    wlr-randr --output ${main_monitor} --transform 90
+    ;;
+  90)
+    wlr-randr --output ${main_monitor} --transform 180
+    ;;
+  180)
+    wlr-randr --output ${main_monitor} --transform 270
+    ;;
+  270)
+    wlr-randr --output ${main_monitor} --transform normal
+    ;;
+  *)
+    ;;
+esac
