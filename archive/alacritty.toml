@@ -1,0 +1,29 @@
+# Based on EndeavourOS terminal colors
+# See https://github.com/endeavouros-team/endeavouros-xfce4-terminal-colors/blob/master/endeavouros.theme
+
+[colors.primary]
+background = '#000000'
+foreground = '#e3e3ea'
+
+[colors.normal]
+black = '#000000'
+red = '#ff7f7f'
+green = '#7f3fbf'
+yellow = '#cc3980'
+blue = '#7fbaff'
+magenta = '#7f3fbf'
+cyan = '#7f7fff'
+white = '#cdcccb'
+
+[colors.bright]
+black = '#99c9cc'
+red = '#ff7f7f'
+green = '#7fbaff'
+yellow = '#ff7f7f'
+blue = '#7f7fff'
+magenta = '#7f3fbf'
+cyan = '#7f7fff'
+white = '#e3e3ea'
+
+[font]
+normal = { family = "SauceCodePro NFM", style = "SemiBold" }
