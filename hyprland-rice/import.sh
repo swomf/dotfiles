@@ -12,6 +12,7 @@ home_dots=(
   ".config/ags"
   ".config/hypr"
   ".config/foot"
+  ".zshrc"
 )
 
 etc_configs=(
@@ -19,8 +20,11 @@ etc_configs=(
 )
 
 for i in "${home_dots[@]}"; do
-  dotless_form="$(echo ${i} | sed 's/^.//g')"
-  arrow_msg "Sync ${HOME}/${i} -> $(dirname ${script_dir}/${dotless_form})"
+  # Remove leading dot and eliminate final / and letters afterwards
+  #   e.g. .zshrc -> zshrc
+  #   e.g. .config/hypr -> config
+  form="$(echo ${i} | sed 's/^\.//g' | sed 's/\/.*//g')"
+  arrow_msg "Sync ${HOME}/${i} -> ${script_dir}/${form}"
   rsync \
     --archive \
     --verbose \
@@ -28,7 +32,7 @@ for i in "${home_dots[@]}"; do
     --progress \
     --delete \
     --exclude=".git*" \
-    "${HOME}/${i}" "$(dirname ${script_dir}/${dotless_form})"
+    "${HOME}/${i}" "${script_dir}/${form}"
 done
 
 for i in "${etc_configs[@]}"; do
