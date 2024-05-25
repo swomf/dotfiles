@@ -125,6 +125,38 @@ function BatteryLabel() {
 //   })
 // }
 
+function RAMLabel() {
+  const ram = Variable("", {
+    poll: [2000, 'free -h', out => {
+      // @ts-ignore
+      const line: string = out.split('\n')
+        .find(line => line.includes('Mem:'));
+      const [total, free] = line.split(/\s+/).splice(1, 2);
+      return `${free} / ${total}`;
+    }],
+  });
+  return Widget.Box({
+    vertical: true,
+    children: [
+      Widget.Label({
+        angle: 90,
+        vpack: "end",
+        hpack: "center",
+        useMarkup: true,
+        label: ram.bind().as(ratio =>
+          " <span face='Nimbus Sans' font-weight='normal'>"
+          + ratio
+          + "</span> "),
+        class_name: "ram",
+        css: "font-size: 11px;",
+      }),
+      Widget.Icon({
+        icon: 'device_mem'
+      }),
+    ]
+  })
+}
+
 function Volume() {
   const icons = {
     101: "overamplified",
@@ -146,8 +178,22 @@ function Volume() {
     size: 13,
   })
 
+  // const volumeEntry = Widget.Entry({
+  //   placeholder_text: "t",
+  //   text: `${audio.speaker.volume * 100}`,
+  //   onAccept: ({text}) => {
+  //     if (Number(text) > 0 && Number(text) <= 100) {
+  //       audio.speaker.volume = Number(text) / 100        
+  //     }
+  //   }
+  // })
+
   // const slider = Widget.Slider({
-  //   hexpand: true,
+  //   orientation: 1,
+  //   vexpand: true,
+  //   value: 0,
+  //   min: 0,
+  //   max: 1,
   //   draw_value: false,
   //   on_change: ({ value }) => audio.speaker.volume = value,
   //   setup: self => self.hook(audio.speaker, () => {
@@ -156,10 +202,11 @@ function Volume() {
   // })
 
   return Widget.Box({
+    vertical: true,
     class_name: "volume",
     css: "min-width: 1px",
     hpack: "center",
-    children: [icon],
+    children: [icon, /*volumeEntry*/],
     // children: [icon, slider],
   })
 }
@@ -193,9 +240,8 @@ function Bottom() {
     vertical: true,
     children: [
       SysTray(),
-      // cpuProgress(),
-      // ramProgress(),
       BatteryLabel(),
+      RAMLabel(),
       Volume(),
       Clock(),
     ],
