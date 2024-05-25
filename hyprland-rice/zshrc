@@ -113,33 +113,14 @@ stfu() {
   nohup "$@" &>/dev/null &
   disown
 }
-_stfu() {
-  # Curcontext looks like this:
-  #   $ stfu <tab>
-  #   :complete:stfu:
-  local curcontext="$curcontext" 
-  #typeset -A opt_args
-
-  _arguments \
-    '1: :_command_names -e' \
-    '*::args:->args'
-
-  case $state in
-    args)
-      if (( CURRENT > 1 )); then
-        # $words is magic that splits up the "words" in a shell command.
-        #   1. stfu
-        #   2. yourSubCommand
-        #   3. argument 1 to that subcommand
-        local cmd=${words[2]}
-        # Update the autocompletion curcontext to
-        # pay attention to your subcommand instead
-        curcontext="$cmd"
-
-        # Call completion function
-        _normal
-      fi
-      ;;
-  esac
+_stfu () {
+  # Since we take a command as an argument, we need to
+  # shift the _normal completion function to the next word.
+  shift words
+  (( CURRENT-=1 ))
+  _normal # -P
 }
 compdef _stfu stfu
+
+# Stop TTY beep noise
+setterm --bfreq=0 &> /dev/null
