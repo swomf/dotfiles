@@ -50,7 +50,35 @@ function SysTray() {
   })
 }
 
-const divide = ([total, free]) => free / total;
+function CoreTempLabel() {
+  const cpu = Variable(0, {
+    poll: [2000, 'cat /sys/class/thermal/thermal_zone0/temp', out => {
+      const temp = Math.round(Number(out) / 1000);
+      return `${temp}°C`;
+    }],
+  });
+
+  return Widget.Box({
+    vertical: true,
+    children: [
+      Widget.Label({
+        angle: 90,
+        vpack: "end",
+        hpack: "center",
+        useMarkup: true,
+        label: cpu.bind().as(temp =>
+          " <span face='Nimbus Sans' font-weight='normal'>"
+          + temp
+          + "</span> "),
+        class_name: "battery",
+        css: "font-size: 11px;",
+      }),
+      Widget.Icon({
+        icon: "cpu-symbolic",
+      })
+    ]
+  })
+}
 
 // function cpuProgress() {
 //   const cpu = Variable(0, {
@@ -243,6 +271,7 @@ function Bottom() {
     vertical: true,
     children: [
       SysTray(),
+      CoreTempLabel(),
       BatteryLabel(),
       RAMLabel(),
       Volume(),
