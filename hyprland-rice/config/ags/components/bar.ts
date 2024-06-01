@@ -47,17 +47,17 @@ function Top() {
 
 function SysTray() {
   const items = systemtray.bind("items")
-  .as(items => items.map(item => Widget.Button({
-    child: Widget.Icon({
-      icon: item.bind("icon"),
-      size: 10,
-      css: "padding: 0px; margin: 0px;",
-    }),
-    on_primary_click: (_, event) => item.activate(event),
-    on_secondary_click: (_, event) => item.openMenu(event),
-    tooltip_markup: item.bind("tooltip_markup"),
-  })))
-      
+    .as(items => items.map(item => Widget.Button({
+      child: Widget.Icon({
+        icon: item.bind("icon"),
+        size: 10,
+        css: "padding: 0px; margin: 0px;",
+      }),
+      on_primary_click: (_, event) => item.activate(event),
+      on_secondary_click: (_, event) => item.openMenu(event),
+      tooltip_markup: item.bind("tooltip_markup"),
+    })))
+
   return Widget.Box({
     vertical: true,
     children: items,
