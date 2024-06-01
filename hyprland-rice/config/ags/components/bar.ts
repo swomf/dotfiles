@@ -1,7 +1,21 @@
+import { Binding } from "types/service";
+
 const hyprland = await Service.import("hyprland")
 const audio = await Service.import("audio")
 const battery = await Service.import("battery")
 const systemtray = await Service.import("systemtray")
+
+function StandardLabel(label: string | Binding<any, any, string> | null | undefined, class_name: string) {
+  return Widget.Label({
+    angle: 90,
+    vpack: "end",
+    hpack: "center",
+    useMarkup: true,
+    label: label,
+    class_name: class_name,
+    css: "font-size: 11px; font-family: 'Nimbus Sans'; font-weight: normal; margin: 3px;",
+  });
+}
 
 function Workspaces() {
   const activeId = hyprland.active.workspace.bind("id")
@@ -61,18 +75,7 @@ function CoreTempLabel() {
   return Widget.Box({
     vertical: true,
     children: [
-      Widget.Label({
-        angle: 90,
-        vpack: "end",
-        hpack: "center",
-        useMarkup: true,
-        label: cpu.bind().as(temp =>
-          " <span face='Nimbus Sans' font-weight='normal'>"
-          + temp
-          + "</span> "),
-        class_name: "battery",
-        css: "font-size: 11px;",
-      }),
+      StandardLabel(cpu.bind().as(c => `${c}`), "cpu"),
       Widget.Icon({
         icon: "cpu-symbolic",
       })
@@ -116,18 +119,7 @@ function BatteryLabel() {
   return Widget.Box({
     vertical: true,
     children: [
-      Widget.Label({
-        angle: 90,
-        vpack: "end",
-        hpack: "center",
-        useMarkup: true,
-        label: battery.bind("percent").as(p =>
-          " <span face='Nimbus Sans' font-weight='normal'>"
-          + p
-          + "</span> "),
-        class_name: "battery",
-        css: "font-size: 11px;",
-      }),
+      StandardLabel(battery.bind("percent").as(p => `${p}%`), "battery"),
       Widget.Icon({
         icon: battery.bind("percent").as(p =>
           `battery-level-${Math.floor(p / 10) * 10}-symbolic`),
@@ -169,18 +161,7 @@ function RAMLabel() {
   return Widget.Box({
     vertical: true,
     children: [
-      Widget.Label({
-        angle: 90,
-        vpack: "end",
-        hpack: "center",
-        useMarkup: true,
-        label: ram.bind().as(ratio =>
-          " <span face='Nimbus Sans' font-weight='normal'>"
-          + ratio
-          + "</span> "),
-        class_name: "ram",
-        css: "font-size: 11px;",
-      }),
+      StandardLabel(ram.bind(), "ram"),
       Widget.Icon({
         icon: 'device_mem'
       }),
@@ -247,19 +228,7 @@ const time = Variable("", {
 })
 
 function Clock() {
-  return Widget.Label({
-    vpack: 'end',
-    hpack: 'center',
-    useMarkup: true,
-    label: time.bind()
-      .as(t =>
-        " <span face='Nimbus Sans' font-weight='normal'>"
-        + t
-        + "</span> "
-      ),
-    angle: 90,
-    css: "font-size: 11px;",
-  })
+  return StandardLabel(time.bind(), "clock")
 }
 
 
