@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+set -x
+
 script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 arrow_msg() {
@@ -11,7 +13,7 @@ arrow_msg() {
 home_dots=(
   ".config/ags"
   ".config/hypr"
-  ".config/foot"
+  ".config/xfce4/terminal/colorschemes"
   ".zshrc"
 )
 
@@ -23,7 +25,8 @@ for i in "${home_dots[@]}"; do
   # Remove leading dot and eliminate final / and letters afterwards
   #   e.g. .zshrc -> zshrc
   #   e.g. .config/hypr -> config
-  form="$(echo ${i} | sed 's/^\.//g' | sed 's/\/.*//g')"
+  #   e.g. .config/xfce4/terminal/colorschemes -> .config/xfce4/terminal
+  form="$(echo "${i}" | sed 's/^\.//; s/\/[^\/]*$//')"
   arrow_msg "Sync ${HOME}/${i} -> ${script_dir}/${form}"
   rsync \
     --archive \
@@ -32,6 +35,7 @@ for i in "${home_dots[@]}"; do
     --progress \
     --delete \
     --exclude=".git*" \
+    --mkpath \
     "${HOME}/${i}" "${script_dir}/${form}"
 done
 
