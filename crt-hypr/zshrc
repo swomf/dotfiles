@@ -122,5 +122,17 @@ _stfu () {
 }
 compdef _stfu stfu
 
+ffresolution() {
+  ffprobe -v error -select_streams v:0 -show_entries stream=width,height -of csv=s=x:p=0 "$1"
+}
+
 # Stop TTY beep noise
 setterm --bfreq=0 &> /dev/null
+
+# pnpm
+export PNPM_HOME="${HOME}/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
