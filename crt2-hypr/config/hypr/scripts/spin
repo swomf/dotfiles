@@ -1,0 +1,45 @@
+#!/bin/bash
+
+main_monitor="eDP-1"
+
+# Which way is down? to wlr-randr and hyprctl
+#   wlr-randr (normal, then increments of 90deg clockwise)
+#   hyprctl (simple 0 1 2 3)
+#   https://wiki.hyprland.org/Configuring/Variables/#touchdevice
+#
+declare -A rotArray
+rotArray[down]="normal 0"
+rotArray[right]="90 1"
+rotArray[up]="180 2"
+rotArray[left]="270 3"
+
+rot() {
+  # e.g. rot up
+  args=(${rotArray[$1]})
+  wlr-randr --output ${main_monitor} --transform ${args[0]}
+  hyprctl keyword input:touchdevice:transform ${args[1]}
+}
+
+# Take arguments
+if [ -n "$1" ]; then
+  rot $1
+  exit 0
+fi
+
+# Spin counterclockwise
+case $(wlr-randr | awk '/Transform/ {print $2}') in
+  normal)
+    rot left
+    ;;
+  270)
+    rot up
+    ;;
+  180)
+    rot right
+    ;;
+  90)
+    rot down
+    ;;
+  *)
+    ;;
+esac
