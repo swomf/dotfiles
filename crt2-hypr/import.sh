@@ -13,6 +13,7 @@ home_dots=(
   ".config/hypr"
   ".config/foot"
   ".config/anyrun"
+  ".config/swappy"
   ".zshrc"
 )
 
