@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+DATE=$(date +"%Y-%m-%d %R")
+DATE_LEN=16
+BAT=$(cat /sys/class/power_supply/BAT1/capacity)
+BAT_FORMATTED=$(printf "%3.0f%s" "$BAT" "%")
+printf "%s\n" "$DATE"
+printf "%*s\n" "$DATE_LEN" "$BAT_FORMATTED"
