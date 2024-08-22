@@ -109,6 +109,7 @@ tldr() {
 alias neofetch='fastfetch --config neofetch'
 alias py=python
 alias yay=paru
+alias vim=nvim
 stfu() {
   if [ -z "$1" ]; then
     echo "Usage: stfu <program or alias> [arguments...]"
