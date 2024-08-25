@@ -110,6 +110,7 @@ alias neofetch='fastfetch --config neofetch'
 alias py=python
 alias yay=paru
 alias vim=nvim
+alias foliate="env WEBKIT_DISABLE_DMABUF_RENDERER=1 foliate"
 stfu() {
   if [ -z "$1" ]; then
     echo "Usage: stfu <program or alias> [arguments...]"
