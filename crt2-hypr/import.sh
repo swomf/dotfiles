@@ -14,6 +14,7 @@ home_dots=(
   ".config/foot"
   ".config/anyrun"
   ".config/swappy"
+  ".config/electron-flags.conf"
   ".zshrc"
 )
 

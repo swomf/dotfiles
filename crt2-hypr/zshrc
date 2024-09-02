@@ -134,10 +134,6 @@ _stfu() {
   _normal
 }
 compdef _stfu stfu
-# Wayland electron ozone platforms
-# https://github.com/microsoft/vscode/issues/149102 ~/.config/code-flags.conf
-#alias code='code --ozone-platform=wayland'
-alias obsidian='obsidian --ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations'
 # bun completions
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
