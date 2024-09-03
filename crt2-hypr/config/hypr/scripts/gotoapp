@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+workspace=$(hyprctl clients | awk -v target="class: obsidian" '
+  # Store the last 5 lines in a circular buffer
+  {
+    lines[NR % 5] = $0
+  }
+  # When the target line is found, print the line 4 lines before it
+  $0 ~ target {
+    if (NR >= 5) {
+      # Extract the line from the buffer
+      line = lines[(NR - 4) % 5]
+      # Extract the number from the line
+      match(line, /workspace: ([0-9]+) \(/, arr)
+      print arr[1]
+    } else {
+      print "Not enough lines before the target."
+    }
+  }
+')
+
+hyprctl dispatch workspace "$workspace"
