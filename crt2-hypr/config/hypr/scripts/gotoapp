@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+workspace=$(hyprctl clients -j | jq -r 'first(.[] | select(.class == "obsidian") | .workspace.id)')
+
+hyprctl dispatch workspace "$workspace"
