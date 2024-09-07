@@ -121,8 +121,11 @@ function BatteryLabel() {
     children: [
       StandardLabel(battery.bind("percent").as(p => `${p}%`), "battery"),
       Widget.Icon({
-        icon: battery.bind("percent").as(p =>
-          `battery-${Math.floor(p / 10).toString().padStart(2, '0')}0${battery.charging ? "-charging" : ""}`),
+        icon: Utils.merge([battery.bind("percent"), battery.bind("charging")], (percent, isCharging) => {
+          return `battery-${Math.floor(percent / 10).toString().padStart(2, '0')}0${isCharging ? "-charging" : ""}`
+        })
+        // icon: battery.bind("percent").as(p =>
+        //   `battery-${Math.floor(p / 10).toString().padStart(2, '0')}0${battery.charging ? "-charging" : ""}`),
       })
     ]
   })
