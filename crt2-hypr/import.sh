@@ -33,7 +33,7 @@ for i in "${home_dots[@]}"; do
     --human-readable \
     --progress \
     --delete \
-    --exclude=".git*" \
+    --exclude=".git" \
     "${HOME}/${i}" "${script_dir}/${form}"
 done
 
@@ -45,6 +45,6 @@ for i in "${etc_configs[@]}"; do
     --human-readable \
     --progress \
     --delete \
-    --exclude=".git*" \
+    --exclude=".git" \
     "/etc/${i}" "${script_dir}/etc/"
 done
