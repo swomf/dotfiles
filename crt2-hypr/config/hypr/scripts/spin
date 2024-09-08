@@ -15,14 +15,14 @@ rotArray[left]="270 3"
 
 rot() {
   # e.g. rot up
-  args=(${rotArray[$1]})
-  wlr-randr --output ${main_monitor} --transform ${args[0]}
-  hyprctl keyword input:touchdevice:transform ${args[1]}
+  IFS=' ' read -r -a args <<< "${rotArray[$1]}"
+  wlr-randr --output ${main_monitor} --transform "${args[0]}"
+  hyprctl keyword input:touchdevice:transform "${args[1]}"
 }
 
 # Take arguments
 if [ -n "$1" ]; then
-  rot $1
+  rot "$1"
   exit 0
 fi
 
