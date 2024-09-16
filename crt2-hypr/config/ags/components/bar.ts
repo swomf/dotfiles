@@ -20,19 +20,22 @@ function StandardLabel(label: string | Binding<any, any, string> | null | undefi
 function Workspaces() {
   const activeId = hyprland.active.workspace.bind("id")
   // sort workspaces
-  const workspaces = hyprland.bind("workspaces")
-    .as(ws => ws
-      .sort((a, b) => a.id - b.id)
-      .map(({ id }) => Widget.Button({
-        on_clicked: () => hyprland.messageAsync(`dispatch workspace ${id}`),
-        child: Widget.Label(`${id}`),
-        class_name: activeId.as(i => `${i === id ? "focused" : ""}`),
-      })))
+  const workspaces = Array.from({ length: 20 }, (_, ws) => ws + 1).map(
+    ws => Widget.Button({
+      attribute: ws,
+      label: `${ws}`,
+      class_name: activeId.as(i => `${i === ws ? "focused" : ""}`),
+      onClicked: () => hyprland.messageAsync(`dispatch workspace ${ws}`)
+    })
+  )
 
   return Widget.Box({
     class_name: "workspaces",
     vertical: true,
     children: workspaces,
+    setup: self => self.hook(hyprland, () => self.children.forEach(btn => {
+      btn.visible = hyprland.workspaces.some(ws => ws.id === btn.attribute);
+    })),
   })
 }
 
@@ -66,10 +69,11 @@ function SysTray() {
 
 function CoreTempLabel() {
   const cpu = Variable(0, {
-    poll: [2000, 'cat /sys/class/thermal/thermal_zone0/temp', out => {
-      const temp = Math.round(Number(out) / 1000);
-      return `${temp}°C`;
-    }],
+    poll: [
+      2000,
+      'cat /sys/class/thermal/thermal_zone0/temp',
+      out => `${Math.round(Number(out) / 1000)}°C`
+    ]
   });
 
   return Widget.Box({

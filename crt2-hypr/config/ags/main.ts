@@ -1,5 +1,5 @@
 import Bar from "./components/bar"
-import { NotificationPopups } from "./components/notify.ts"
+import { NotificationPopups } from "./components/notify"
 
 // const notifications = await Service.import("notifications")
 // const mpris = await Service.import("mpris")
