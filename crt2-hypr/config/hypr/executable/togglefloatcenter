@@ -1,0 +1,12 @@
+#!/usr/bin/env sh
+
+is_floating="$(hyprctl activewindow | awk '/floating: [01]/ {print $2}')"
+
+if [ "$is_floating" = 0 ]; then
+  hyprctl --batch \
+    "dispatch togglefloating;\
+    dispatch resizeactive exact 80% 80%;\
+    dispatch centerwindow;"
+else
+  hyprctl dispatch togglefloating
+fi
