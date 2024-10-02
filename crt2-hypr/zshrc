@@ -2,8 +2,6 @@
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
-zstyle ':omz:alpha:lib:git' async-prompt no
-
 # Path to your Oh My Zsh installation.
 export ZSH=/usr/share/oh-my-zsh
 # Set name of the theme to load --- if set to "random", it will
@@ -111,6 +109,20 @@ blacken-term(){
   trap 'tput reset' INT
   echo -ne "\e]12;#00000F\a"
   clear && sleep 1e8
+}
+ytw() {
+  yt-dlp -o - "$1" | mpv --profile=fast --hwdec=auto -
+}
+realcd() {
+  cd "$(realpath '$1')"
+}
+gitget() {
+  url="$(echo "$1" | awk -F'/' -v OFS='/' '{
+      $3 = "raw.githubusercontent.com";
+      $6 = "refs/heads"; 
+      print; 
+  }')"
+  wget "$url"
 }
 alias neofetch='fastfetch --config neofetch'
 alias py=python
