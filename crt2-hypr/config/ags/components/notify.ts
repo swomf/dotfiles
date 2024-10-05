@@ -1,7 +1,7 @@
 const notifications = await Service.import("notifications")
+import { Notification as NotificationInterface } from "types/service/notifications"
 
-/** @param {import('resource:///com/github/Aylur/ags/service/notifications.js').Notification} n */
-function NotificationIcon({ app_entry, app_icon, image }) {
+function NotificationIcon({ app_entry, app_icon, image }: NotificationInterface) {
   if (image) {
     return Widget.Box({
       css: `background-image: url("${image}");`
@@ -23,8 +23,7 @@ function NotificationIcon({ app_entry, app_icon, image }) {
   })
 }
 
-/** @param {import('resource:///com/github/Aylur/ags/service/notifications.js').Notification} n */
-function Notification(n) {
+function Notification(n: NotificationInterface) {
   const icon = Widget.Box({
     // vpack: "start",
     class_name: "icon",
@@ -95,13 +94,15 @@ export function NotificationPopups(monitor = 0) {
     children: notifications.popups.map(Notification),
   })
 
-  function onNotified(_, /** @type {number} */ id) {
+  // the type of _ is supposedly an AgsWidget but
+  // it is not well-defined. Hence, any is used
+  function onNotified(_: any, id: number) {
     const n = notifications.getNotification(id)
     if (n)
       list.children = [Notification(n), ...list.children]
   }
 
-  function onDismissed(_, /** @type {number} */ id) {
+  function onDismissed(_:any, id: number) {
     list.children.find(n => n.attribute.id === id)?.destroy()
   }
 
