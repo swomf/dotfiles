@@ -114,7 +114,7 @@ ytw() {
   yt-dlp -o - "$1" | mpv --profile=fast --hwdec=auto -
 }
 realcd() {
-  cd "$(realpath '$1')"
+  cd "$(realpath $1)"
 }
 gitget() {
   url="$(echo "$1" | awk -F'/' -v OFS='/' '{
