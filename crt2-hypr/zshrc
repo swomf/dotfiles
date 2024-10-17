@@ -135,8 +135,17 @@ stfu() {
     return 1
   fi
 
-  # eval evaluates aliases
-  eval "$@" &>/dev/null &
+  if [[ "$(type "$1" | cut -d' ' -f2-5)" == "is a shell function" ]]; then
+    # eval can be buggy with quotes; this is a backup
+    # in case we're running something like stfu stfu ls
+    eval "$@" &>/dev/null &
+  else
+    # alias expansion support instead of raw nohup
+    # do not add quotations on left; keep command distinct
+    #   e.g. nohup "env a=b" "ls" will fail
+    nohup $(whence $1) "${@:2}" &>/dev/null &
+  fi
+
   disown
 }
 _stfu() {
