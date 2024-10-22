@@ -20,11 +20,12 @@ function StandardLabel(label: string | Binding<any, any, string> | null | undefi
 function Workspaces() {
   const activeId = hyprland.active.workspace.bind("id")
   // sort workspaces
+  // wraparound at i>=21 for grid-like system
   const workspaces = Array.from({ length: 20 }, (_, ws) => ws + 1).map(
     ws => Widget.Button({
       attribute: ws,
       label: `${ws}`,
-      class_name: activeId.as(i => `${i === ws ? "focused" : ""}`),
+      class_name: activeId.as(i => `${i % 20 === ws ? "focused" : ""}`),
       onClicked: () => hyprland.messageAsync(`dispatch workspace ${ws}`)
     })
   )
@@ -72,6 +73,7 @@ function CoreTempLabel() {
     poll: [
       2000,
       'cat /sys/class/thermal/thermal_zone0/temp',
+      // @ts-ignore
       out => `${Math.round(Number(out) / 1000)}°C`
     ]
   });
