@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+transform="$(wlr-randr --output eDP-1 | awk '/Transform/ {print $2}')"
+if [[ "$transform" == "normal" || "$transform" == "180" ]]; then
+  # Horizontally-long screen
+  hyprlock
+else
+  # Vertically-oriented screen
+  hyprlock -c ~/.config/hypr/hyprlock-vertical.conf
+fi
