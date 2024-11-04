@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 main_monitor="eDP-1"
 
@@ -9,17 +9,22 @@ main_monitor="eDP-1"
 #      a spin. in that case, just repeat whatever orientation you're on
 #      e.g. right side up and hyprpaer is wrong? go right side up again
 declare -A rotArray
-rotArray[down]="0"
-rotArray[right]="1"
-rotArray[up]="2"
-rotArray[left]="3"
+rotArray[down]="0 ~/.config/hypr/assets/lagtrain.png"
+rotArray[right]="1 ~/.config/hypr/assets/rainyboots.png"
+rotArray[up]="2 ~/.config/hypr/assets/lagtrain.png"
+rotArray[left]="3 ~/.config/hypr/assets/rainyboots.png"
 
 rot() {
   # e.g. rot up
-  arg="${rotArray[$1]}"
+  IFS=' ' read -r -a args <<<"${rotArray[$1]}"
+  direction="${args[0]}"
+  wallpaper="${args[1]}"
   hyprctl --batch \
-    "keyword monitor eDP-1,1920x1080@60,0x0,1.2,transform,${arg};\
-    keyword input:touchdevice:transform ${arg};"
+    "keyword monitor eDP-1,1920x1080@60,0x0,1.2,transform,${direction};\
+    keyword input:touchdevice:transform ${direction};"
+  # hyprctl doesnt work with batch and crashes if immediately
+  # after a rotation
+  sleep .2 && hyprctl hyprpaper wallpaper eDP-1,"${wallpaper}"
 }
 
 # Take arguments
