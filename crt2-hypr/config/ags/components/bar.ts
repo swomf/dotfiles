@@ -25,7 +25,7 @@ function Workspaces() {
     ws => Widget.Button({
       attribute: ws,
       label: `${ws}`,
-      class_name: activeId.as(i => `${i % 20 === ws ? "focused" : ""}`),
+      class_name: activeId.as(i => `${(i-1) % 20 + 1 === ws ? "focused" : ""}`),
       onClicked: () => hyprland.messageAsync(`dispatch workspace ${ws}`)
     })
   )
@@ -240,7 +240,16 @@ const time = Variable("", {
 })
 
 function Clock() {
-  return StandardLabel(time.bind(), "clock")
+  return Widget.Box({
+    vpack: "end",
+    hpack: "center",
+    child: StandardLabel(time.bind(), "time"),
+    // class_name: activeId.as(i => `${i === ws ? "focused" : ""}`),
+    //onClicked: () => {
+    //  App.ToggleWindow("calendar")
+    //}/* todo add calendar */,
+    css: "font-size: 11px; font-family: 'Nimbus Sans'; font-weight: normal;",
+  })
 }
 
 
