@@ -13,18 +13,18 @@ function StandardLabel(label: string | Binding<any, any, string> | null | undefi
     useMarkup: true,
     label: label,
     class_name: class_name,
-    css: "font-size: 11px; font-family: 'Nimbus Sans'; font-weight: normal; margin: 3px;",
+    css: "font-size: 12px; font-family: 'Nimbus Sans'; font-weight: normal; margin: 3px;",
   });
 }
 
 function Workspaces() {
   const activeId = hyprland.active.workspace.bind("id")
   // sort workspaces
-  // wraparound at i>=21 for grid-like system
   const workspaces = Array.from({ length: 20 }, (_, ws) => ws + 1).map(
     ws => Widget.Button({
       attribute: ws,
-      label: `${ws}`,
+      label: `${ws}`, //      modulus into 1<=20 for grid-like system
+      css: "min-width: 20px; padding: 0px; margin: 0px;",
       class_name: activeId.as(i => `${(i-1) % 20 + 1 === ws ? "focused" : ""}`),
       onClicked: () => hyprland.messageAsync(`dispatch workspace ${ws}`)
     })
