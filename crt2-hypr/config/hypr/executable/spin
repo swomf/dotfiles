@@ -17,13 +17,13 @@ rot() {
   direction="${args[0]}"
   wallpaper="${args[1]}"
   hyprctl --batch \
-    "keyword monitor ${main_monitor},1920x1080@60,0x0,1.2,transform,${direction};\
+    "keyword monitor ${main_monitor},1920x1080@60,0x0,1,transform,${direction};\
     keyword input:touchdevice:transform ${direction};"
   # hyprctl doesnt work with batch and crashes if immediately
   # after a rotation
   current_wallpaper="$(hyprctl hyprpaper listactive | awk "/${main_monitor}/ {print \$3}")"
   if [[ ! "$current_wallpaper" == "$(realpath "${wallpaper}")" ]]; then
-    sleep .1 && hyprctl hyprpaper wallpaper eDP-1,"${wallpaper}"
+    sleep .15 && hyprctl hyprpaper wallpaper eDP-1,"${wallpaper}"
   fi
 
 }
