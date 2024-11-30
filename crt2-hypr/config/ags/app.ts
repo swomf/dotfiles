@@ -5,7 +5,6 @@ import NotificationPopups from "./notifications/NotificationPopups"
 
 App.start({
   css: style,
-  instanceName: "js",
   main: () => {
     const monitors = App.get_monitors();
     monitors.map(Bar);
