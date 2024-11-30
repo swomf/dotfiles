@@ -1,0 +1,109 @@
+@use "sass:color";
+
+$bg: #000000;
+$fg: #e0e0e0;
+$accent: #378DF7;
+$radius: 7px;
+
+window.Bar {
+    border: none;
+    box-shadow: none;
+    background-color: $bg;
+    color: $fg;
+    font-size: 1.1em;
+    font-weight: bold;
+
+    button {
+        all: unset;
+        background-color: transparent;
+        border-radius: $radius;
+        transition: 200ms;
+
+        &:hover {
+            border-bottom: 3px solid;
+            background-color: color.adjust($fg, $alpha: -0.7);
+        }
+
+        &:active {
+            background-color: $fg;
+
+            label {
+                color: $bg;
+                border-color: $accent;
+            }
+        }
+    }
+
+    .Workspaces {
+        label {
+            // thicker than normal
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        .focused {
+            border-bottom: 3px solid;
+        }
+    }
+
+    label {
+        transition: 200ms;
+        margin: 2px;
+        border-radius: $radius;
+        font-family: "Nimbus Sans";
+        font-weight: 500;
+        font-size: 12px;
+    }
+
+    .BarStuff {
+        margin-top: 2px;
+        margin-bottom: 2px;
+
+        * {
+            margin-top: 2px;
+            margin-bottom: 2px;
+        }
+    }
+
+    // mpris is unused.
+    // .Media .Cover {
+    //     min-height: 1.2em;
+    //     min-width: 1.2em;
+    //     border-radius: $radius;
+    //     background-position: center;
+    //     background-size: contain;
+    // }
+
+    .AudioSlider {
+        * {
+            all: unset;
+        }
+
+        icon {
+            margin-right: .6em;
+        }
+
+        & {
+            margin: 0 1em;
+        }
+
+        trough {
+            background-color: color.adjust($fg, $alpha: -0.8);
+            border-radius: $radius;
+        }
+
+        highlight {
+            background-color: $accent;
+            min-height: .8em;
+            border-radius: $radius;
+        }
+
+        slider {
+            background-color: $fg;
+            border-radius: $radius;
+            min-height: 1em;
+            min-width: 1em;
+            margin: -.2em;
+        }
+    }
+}
