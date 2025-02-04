@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 
-transform="$(wlr-randr --output eDP-1 | awk '/Transform/ {print $2}')"
-if [[ "$transform" == "normal" || "$transform" == "180" ]]; then
+transform="$(
+  hyprctl monitors | awk '/eDP-1/ {
+    while (getline > 0 && !/transform/) {}
+    print $2
+  }'
+)"
+
+if [[ "$transform" == "0" || "$transform" == "2" ]]; then
   # Horizontally-long screen
   hyprlock
 else
