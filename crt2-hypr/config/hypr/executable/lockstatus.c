@@ -7,7 +7,7 @@
 #define RECT_LEN 17
 #define DATE_LEN 18
 #define MEM_LEN 5 // e.g. 15.3
-#define BATTERY_DIR "/sys/class/power_supply/BAT1"
+#define BATTERY_DIR "/sys/class/power_supply/BAT0"
 
 typedef enum { kB, MiB, GiB, TiB } data_size;
 const char *data_size_str[] = {"kB", "MiB", "GiB", "TiB"};
@@ -56,7 +56,6 @@ int main() {
            data_size_str[mem.used_unit], mem_total_str,
            data_size_str[mem.total_unit]);
   printf("%*s\n", RECT_LEN, mem_str);
-  
 
   return 0;
 }
