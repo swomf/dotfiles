@@ -27,7 +27,7 @@ eventbox.Notification {
     background-color: $bg-color;
     margin: .5rem 1rem .5rem 1rem;
     box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
-    border: 1pt solid gtkalpha($fg-color, .03);
+    border: 1pt solid gtkalpha($fg-color, 1);
   }
   &.critical>box {
     border: 1pt solid gtkalpha($error, .4);
@@ -57,6 +57,13 @@ eventbox.Notification {
       margin: 0 .4rem;
     }
     button {
+      border-radius: 8px;
+      &:hover {
+        background-color: gtkalpha($fg-color, .8);
+        icon {
+          color: $bg-color;
+        }
+      }
       padding: .2rem;
       min-width: 0;
       min-height: 0;
