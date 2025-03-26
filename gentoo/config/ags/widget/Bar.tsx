@@ -6,7 +6,7 @@ import Hyprland from "gi://AstalHyprland"
 import Battery from "gi://AstalBattery"
 import Wp from "gi://AstalWp"
 import Network from "gi://AstalNetwork"
-/*import Tray from "gi://AstalTray"
+import Tray from "gi://AstalTray"
 
 function SysTray() {
   const tray = Tray.get_default()
@@ -28,7 +28,7 @@ function SysTray() {
       </button>
     }))}
   </box>
-}*/
+}
 
 function Wifi() {
   // TODO add network throughput
@@ -182,7 +182,7 @@ export default function Bar(monitor: Gdk.Monitor) {
       </box>
       <box />
       <box hexpand valign={Gtk.Align.END} vertical className="BarStuff">
-        {/*<SysTray />*/}
+        <SysTray />
         <Wifi />
         <CPU />
         <Memory />
