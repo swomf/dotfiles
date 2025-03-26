@@ -1,7 +1,5 @@
-CC = gcc
-CFLAGS = -Os -flto -ffunction-sections -fdata-sections
+CFLAGS = -Oz -flto -Wall -Wextra -Wpedantic
 CXXFLAGS = $(CFLAGS)
-LDFLAGS = -flto
 
 all: lockstatus organize_workspaces
 
