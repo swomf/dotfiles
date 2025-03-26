@@ -1,12 +1,10 @@
-// formatted with `clang-format --style=llvm`
-
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 
 #define RECT_LEN 17
 #define DATE_LEN 18
-#define MEM_LEN 5 // e.g. 15.3
+#define MEM_LEN 5 // e.g. 15.3 as 5 chars
 #define BATTERY_DIR "/sys/class/power_supply/BAT0"
 
 typedef enum { kB, MiB, GiB, TiB } data_size;
@@ -19,11 +17,12 @@ typedef struct {
 } Mem;
 
 int update_date(char *date_str, size_t date_len);
-int update_battery_percent(int *battery_percent);
+int update_battery_percent(int *battery_percent, char **charging_str);
 int update_memory(Mem *mem);
 
 int main() {
   char date_str[DATE_LEN];
+  char *charging_str;
   int battery_percent;
   Mem mem = {0, kB, 0, kB};
 
@@ -32,7 +31,7 @@ int main() {
     return 1;
   }
 
-  if (update_battery_percent(&battery_percent) != 0) {
+  if (update_battery_percent(&battery_percent, &charging_str) != 0) {
     fprintf(stderr, "fail: update_battery_percent\n");
     return 1;
   }
@@ -42,9 +41,10 @@ int main() {
     return 1;
   }
 
-  // Print results
+  // Print leftpadded results
   printf("\u2007%*s\n", RECT_LEN - 1, date_str);
-  printf("%*d%%\n", RECT_LEN - 1, battery_percent);
+  printf("%*s", RECT_LEN - 3, charging_str);
+  printf("%*d%%\n", 4, battery_percent);
   char mem_str[RECT_LEN];
   char mem_used_str[MEM_LEN];
   char mem_total_str[MEM_LEN];
@@ -69,8 +69,9 @@ int update_date(char *date_str, size_t date_len) {
   return 0;
 }
 
-int update_battery_percent(int *battery_percent) {
+int update_battery_percent(int *battery_percent, char **charging_str) {
   FILE *fp = fopen(BATTERY_DIR "/capacity", "r");
+  int status;
   if (fp == NULL) {
     perror("Failed to open battery capacity file");
     return -1;
@@ -81,6 +82,36 @@ int update_battery_percent(int *battery_percent) {
     return -1;
   }
   fclose(fp);
+
+  fp = fopen(BATTERY_DIR "/status", "r");
+  if (fp == NULL) {
+    perror("Failed to open battery status file");
+    return -1;
+  }
+  if ((status = fgetc(fp)) == EOF) {
+    // there's no way a single char will EOF
+    perror("Error reading from file");
+    return -1;
+  }
+  fclose(fp);
+
+  // https://www.kernel.org/doc/Documentation/ABI/testing/sysfs-class-power#:~:text=/status
+  // Valid values:
+  //		      "Unknown", "Charging", "Discharging",
+  //		      "Not charging", "Full"
+  switch (status) {
+  case 'D':
+    *charging_str = "▼";
+    break;
+  case 'C':
+  case 'F':
+    *charging_str = "▲";
+    break;
+  default: // U N
+    *charging_str = " ";
+    break;
+  }
+
   return 0;
 }
 
