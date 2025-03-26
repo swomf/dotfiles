@@ -17,7 +17,7 @@ rot() {
   direction="${args[0]}"
   wallpaper="${args[1]}"
   hyprctl --batch \
-    "keyword monitor ${main_monitor},2880x1620@60,0x0,1.50,transform,${direction};\
+    "keyword monitor ${main_monitor},2880x1620@120,0x0,1.50,transform,${direction};\
     keyword input:touchdevice:transform ${direction};"
   # hyprctl doesnt work with batch and crashes if immediately
   # after a rotation
