@@ -144,6 +144,7 @@ function Workspaces() {
   return <box className="Workspaces" vertical>
     {bind(hypr, "workspaces").as(wss => wss
       .sort((a, b) => a.id - b.id)
+      .filter(ws => ws.id > 0)
       .map(ws => (
         <button
           className={bind(hypr, "focusedWorkspace").as(fw =>
