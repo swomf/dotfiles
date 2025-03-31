@@ -26,7 +26,8 @@ eventbox.Notification {
     border-radius: 13px;
     background-color: $bg-color;
     margin: .5rem 1rem .5rem 1rem;
-    box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
+    // if box-shadow fails, an ugly grey border is created around the box
+    // box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
     border: 1pt solid gtkalpha($fg-color, 1);
   }
   &.critical>box {
