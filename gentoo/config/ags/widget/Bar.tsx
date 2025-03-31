@@ -172,9 +172,12 @@ export default function Bar(monitor: Gdk.Monitor) {
   const { TOP, LEFT, BOTTOM } = Astal.WindowAnchor
 
   return <window
+    name="bar"
+    setup={self => App.add_window(self)}
     className="Bar"
     gdkmonitor={monitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
+    layer={Astal.Layer.TOP}
     anchor={TOP | LEFT | BOTTOM}>
     <centerbox vertical>
       <box hexpand valign={Gtk.Align.START} vertical>
