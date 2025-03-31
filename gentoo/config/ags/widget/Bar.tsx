@@ -72,9 +72,10 @@ function Memory() {
 
 function Sound() {
   const speaker = Wp.get_default()?.audio.defaultSpeaker!
+  let sliderVisible = Variable(false);
 
   return <box vertical className="volume">
-    <slider
+    {bind(sliderVisible).as(visible => visible ? <slider
       vertical
       inverted
       min={0}
@@ -82,8 +83,14 @@ function Sound() {
       heightRequest={50}
       onDragged={({ value }) => speaker.volume = value}
       value={bind(speaker, "volume")}
-    />
-    <label angle={90} widthChars={5} label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
+    /> : <></>) /* ngl this slider is way too wide */}
+    <button onClicked={() => sliderVisible.set(!sliderVisible.get())}>
+      <label
+        yalign={0}
+        angle={90}
+        widthChars={5}
+        label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
+    </button>
     <button
       onClicked={() => {
         execAsync("pavucontrol");
@@ -92,13 +99,6 @@ function Sound() {
     </button>
   </box>
 }
-/*<slider
-      vertical
-      hexpand
-      onDragged={({ value }) => speaker.volume = value}
-      value={bind(speaker, "volume")}
-    />
-*/
 
 function BatteryLevel() {
   const bat = Battery.get_default()
