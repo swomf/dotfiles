@@ -1,5 +1,5 @@
 import { App } from "astal/gtk3"
-import { Variable, GLib, bind } from "astal"
+import { Variable, GLib, bind, execAsync } from "astal"
 import { Astal, Gtk, Gdk } from "astal/gtk3"
 import Hyprland from "gi://AstalHyprland"
 // import Mpris from "gi://AstalMpris"
@@ -73,9 +73,23 @@ function Memory() {
 function Sound() {
   const speaker = Wp.get_default()?.audio.defaultSpeaker!
 
-  return <box vertical>
-    <label angle={90} label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
-    <icon icon={bind(speaker, "volumeIcon")} />
+  return <box vertical className="volume">
+    <slider
+      vertical
+      inverted
+      min={0}
+      max={1.5}
+      heightRequest={50}
+      onDragged={({ value }) => speaker.volume = value}
+      value={bind(speaker, "volume")}
+    />
+    <label angle={90} widthChars={5} label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
+    <button
+      onClicked={() => {
+        execAsync("pavucontrol");
+      }}>
+      <icon icon={bind(speaker, "volumeIcon")} />
+    </button>
   </box>
 }
 /*<slider

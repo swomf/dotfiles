@@ -14,6 +14,25 @@ window.Bar {
   font-size: 1.1em;
   font-weight: bold;
 
+  .volume {
+    padding: 0px;
+    margin: 0px;
+    * {
+      padding: 0px;
+    }
+    trough {
+      min-width: 2px;
+      min-height: 2px;
+    }
+    slider {
+      /* A bit mysterious but this makes the trough thin
+       * without making the slider super wide */
+      margin: -5px;
+      min-width: 10px;
+      min-height: 10px;
+    }
+  }
+
   button {
     all: unset;
     background-color: transparent;
