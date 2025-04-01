@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-script_dir="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
 arrow_msg() {
   printf "$(tput setaf 2)$(tput bold) => $(tput sgr0)$(tput bold)${1}$(tput sgr0)\n"
@@ -14,7 +14,6 @@ home_dots=(
   ".config/foot"
   ".config/anyrun"
   ".config/swappy"
-  ".config/electron-flags.conf"
   ".zshrc"
 )
 
