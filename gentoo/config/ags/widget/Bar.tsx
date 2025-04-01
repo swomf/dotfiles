@@ -11,24 +11,20 @@ import Tray from "gi://AstalTray"
 function SysTray() {
   const tray = Tray.get_default()
 
-  return <box vertical>
-    {bind(tray, "items").as(items => items.map(item => {
-      if (item.iconThemePath)
-        App.add_icons(item.iconThemePath)
-
-      const menu = item.create_menu()
-
-      return <button
+  return <box className="tray">
+    {bind(tray, "items").as(items => items.map(item => (
+      <menubutton
+        hexpand
         tooltipMarkup={bind(item, "tooltipMarkup")}
-        onDestroy={() => menu?.destroy()}
-        onClickRelease={self => {
-          menu?.popup_at_widget(self, Gdk.Gravity.SOUTH, Gdk.Gravity.NORTH, null)
-        }}>
-        <icon gIcon={bind(item, "gicon")} />
-      </button>
-    }))}
+        usePopover={false}
+        actionGroup={bind(item, "actionGroup").as(ag => ["dbusmenu", ag])}
+        menuModel={bind(item, "menuModel")}>
+        <icon gicon={bind(item, "gicon")} />
+      </menubutton>
+    )))}
   </box>
 }
+
 
 function Wifi() {
   // TODO add network throughput
