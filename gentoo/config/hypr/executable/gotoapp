@@ -1,8 +1,17 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-workspace=$(hyprctl clients -j | jq -r 'first(.[] | select(.class == "obsidian") | .workspace.id)')
+app="$1"
+workspace="$(hyprctl clients -j | jq '.[] | select(.class == "'"$app"'") | .workspace.id')"
 
-hyprctl --batch "
-  dispatch workspace $workspace;
-  dispatch focuswindow class:obsidian;
-"
+if [ -n "$workspace" ]; then
+  hyprctl --batch "
+    dispatch workspace $workspace;
+    dispatch focuswindow class:$app
+  "
+elif [ -n "$2" ]; then
+  exec "$2"
+elif [ -n "$app" ]; then
+  exec "$app"
+else
+  printf "No app provided.\n" >&2
+fi
