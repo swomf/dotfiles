@@ -1,25 +1,17 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
-workspace=$(hyprctl clients | awk -v target="class: obsidian" '
-  # Store the last 5 lines in a circular buffer
-  {
-    lines[NR % 5] = $0
-  }
-  # When the target line is found, print the line 4 lines before it
-  $0 ~ target {
-    if (NR >= 5) {
-      # Extract the line from the buffer
-      line = lines[(NR - 4) % 5]
-      # Extract the number from the line
-      match(line, /workspace: ([0-9]+) \(/, arr)
-      print arr[1]
-    } else {
-      print "Not enough lines before the target."
-    }
-  }
-')
+app="$1"
+workspace="$(hyprctl clients -j | jq '.[] | select(.class == "'"$app"'") | .workspace.id')"
 
-hyprctl --batch "
-  dispatch workspace $workspace;
-  dispatch focuswindow class:obsidian;
-"
+if [ -n "$workspace" ]; then
+  hyprctl --batch "
+    dispatch workspace $workspace;
+    dispatch focuswindow class:$app
+  "
+elif [ -n "$2" ]; then
+  exec "$2"
+elif [ -n "$app" ]; then
+  exec "$app"
+else
+  printf "No app provided.\n" >&2
+fi
