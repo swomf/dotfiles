@@ -14,7 +14,7 @@ function SysTray() {
   return <box className="tray">
     {bind(tray, "items").as(items => items.map(item => (
       <menubutton
-        hexpand
+        vexpand
         tooltipMarkup={bind(item, "tooltipMarkup")}
         usePopover={false}
         actionGroup={bind(item, "actionGroup").as(ag => ["dbusmenu", ag])}
@@ -68,19 +68,27 @@ function Memory() {
 
 function Sound() {
   const speaker = Wp.get_default()?.audio.defaultSpeaker!
-  let sliderVisible = Variable(false);
-
-  return <box vertical className="volume">
-    {bind(sliderVisible).as(visible => visible ? <slider
+  const revealer =
+    <slider
       vertical
       inverted
+      visible={false}
       min={0}
       max={1.5}
       heightRequest={50}
       onDragged={({ value }) => speaker.volume = value}
       value={bind(speaker, "volume")}
-    /> : <></>) /* ngl this slider is way too wide */}
-    <button onClicked={() => sliderVisible.set(!sliderVisible.get())}>
+    />
+
+
+  return <box vertical className="volume">
+    {revealer}
+    <button onClicked={() => {
+      revealer.visible = !revealer.visible;
+      //revealer.heightRequest = revealer.heightRequest == 50 ? 2 : 50;
+      //revealer.set_reveal_child(!revealer.get_reveal_child());
+      //console.log(revealer.revealChild, revealer.childRevealed, revealer.get_transition_duration(), revealer.get_transition_type(), revealer.get_child().visible)
+    }}>
       <label
         yalign={0}
         angle={90}
@@ -93,7 +101,7 @@ function Sound() {
       }}>
       <icon icon={bind(speaker, "volumeIcon")} />
     </button>
-  </box>
+  </box >
 }
 
 function BatteryLevel() {
