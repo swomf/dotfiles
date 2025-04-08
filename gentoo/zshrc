@@ -7,12 +7,14 @@ source $ZSH/oh-my-zsh.sh
 
 # paths #######################################################################
 # cargo
-export PATH=$PATH:$HOME/.cargo/bin
+export PATH="$PATH:$HOME/.cargo/bin"
 # flutter
-export PATH=$PATH:$HOME/flutter/flutter/bin
+export PATH="$PATH:$HOME/flutter/flutter/bin"
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+# local/bin
+export PATH="${PATH}:${HOME}/.local/bin"
 
 # completions #################################################################
 eval "$(zoxide init zsh)"
