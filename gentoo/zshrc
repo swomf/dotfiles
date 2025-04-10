@@ -29,6 +29,9 @@ export GPG_TTY=$(tty)
 #               fixes wayland-compatible electron apps from erroneously using x11
 #               NOTE: some electron apps may need --enable-gpu or --disable-gpu
 export ELECTRON_OZONE_PLATFORM_HINT=auto
+# webkit: nvidia sometimes makes things straight up invisible
+# https://askubuntu.com/a/1493214
+alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 foliate'
 
 # funcs #######################################################################
 alias py=python3
