@@ -34,7 +34,12 @@ export ELECTRON_OZONE_PLATFORM_HINT=auto
 alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 foliate'
 
 # funcs #######################################################################
+
+# like win10 python
 alias py=python3
+
+# disable "save workspace image?" prompt
+alias R='R --no-save'
 
 # silly man page skip
 export tldr() {curl cht.sh/$1}
