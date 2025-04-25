@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 transform="$(
   hyprctl monitors | awk '/eDP-1/ {
@@ -7,7 +7,7 @@ transform="$(
   }'
 )"
 
-if [[ "$transform" == "0" || "$transform" == "2" ]]; then
+if [ "$transform" = "0" ] || [ "$transform" = "2" ]; then
   # Horizontally-long screen
   hyprlock
 else

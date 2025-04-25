@@ -1,28 +1,40 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 main_monitor="eDP-1"
 
 # spin screen and touchscreen via hyprctl batch
 # https://wiki.hyprland.org/Configuring/Variables/#touchdevice
 
-declare -A rotArray
-rotArray[down]="0 $HOME/.config/hypr/assets/lagtrain.png"
-rotArray[right]="1 $HOME/.config/hypr/assets/rainyboots.png"
-rotArray[up]="2 $HOME/.config/hypr/assets/lagtrain.png"
-rotArray[left]="3 $HOME/.config/hypr/assets/rainyboots.png"
-
 rot() {
+  direction=
+  wallpaper=
   # e.g. rot up
-  IFS=' ' read -r -a args <<<"${rotArray[$1]}"
-  direction="${args[0]}"
-  wallpaper="${args[1]}"
+  case $1 in
+  down)
+    direction=0
+    wallpaper="$HOME/.config/hypr/assets/lagtrain.png"
+    ;;
+  right)
+    direction=1
+    wallpaper="$HOME/.config/hypr/assets/rainyboots.png"
+    ;;
+  up)
+    direction=2
+    wallpaper="$HOME/.config/hypr/assets/lagtrain.png"
+    ;;
+  left)
+    direction=3
+    wallpaper="$HOME/.config/hypr/assets/rainyboots.png"
+    ;;
+  esac
+
   hyprctl --batch \
     "keyword monitor ${main_monitor},2880x1620@120,0x0,1.50,transform,${direction};\
     keyword input:touchdevice:transform ${direction};"
   # hyprctl doesnt work with batch and crashes if immediately
   # after a rotation
   current_wallpaper="$(hyprctl hyprpaper listactive | awk "/${main_monitor}/ {print \$3}")"
-  if [[ ! "$current_wallpaper" == "$(realpath "${wallpaper}")" ]]; then
+  if [ ! "$current_wallpaper" = "$(realpath "${wallpaper}")" ]; then
     sleep .15 && hyprctl hyprpaper wallpaper "${main_monitor}","${wallpaper}"
   fi
 
