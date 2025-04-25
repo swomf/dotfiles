@@ -1,8 +1,8 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 # from https://github.com/vilari-mickopf/hyprcwd
 
-pid=$(hyprctl activewindow -j | jq '.pid')
-ppid=$(pgrep --newest --parent "$pid")
-dir=$(readlink /proc/"$ppid"/cwd || echo "$HOME")
+pid="$(hyprctl activewindow -j | jq '.pid')"
+ppid="$(pgrep --newest --parent "$pid")"
+dir="$(readlink /proc/"$ppid"/cwd || echo "$HOME")"
 [ -d "$dir" ] && echo "$dir" || echo "$HOME"
