@@ -38,16 +38,18 @@ function Wifi() {
 }
 
 function CPU() {
-  const cpu = Variable(0).poll(
+  const cpuTemp = Variable(0).poll(
     2000,
     'cat /sys/class/thermal/thermal_zone0/temp',
     (stdout: string, prev: number) =>
       Math.round(Number(stdout) / 1000)
   )
+  // TODO: reorganize magic constant (this css color) into different file
+  const dangerousTemp = bind(cpuTemp).as(p => p >= 90 ? 'color: #FF7F7F' : '');
 
   return <box className="CPU" vertical>
-    <label angle={90} label={bind(cpu).as(p => `${p}°C`)} />
-    <icon icon="cpu-symbolic" />
+    <label angle={90} label={bind(cpuTemp).as(p => `${p}°C`)} css={dangerousTemp} />
+    <icon icon="cpu-symbolic" css={dangerousTemp} />
   </box>
 }
 
