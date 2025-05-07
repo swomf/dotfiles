@@ -1,11 +1,11 @@
-# oh my zsh ###################################################################
+# oh my zsh ################################################################### oh my zsh
 export ZSH="/usr/share/zsh/site-contrib/oh-my-zsh"
 ZSH_THEME="netmask"
 plugins=(git)
 EDITOR=nvim
 source $ZSH/oh-my-zsh.sh
 
-# paths #######################################################################
+# paths ####################################################################### paths
 # cargo
 export PATH="$PATH:$HOME/.cargo/bin"
 # flutter
@@ -16,12 +16,12 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # local/bin
 export PATH="${PATH}:${HOME}/.local/bin"
 
-# completions #################################################################
+# completions ################################################################# completions
 eval "$(zoxide init zsh)"
 source /usr/share/zsh/site-functions/zsh-autosuggestions.zsh
 [ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 
-# fixes #######################################################################
+# fixes ####################################################################### fixes
 # GPG_TTY: https://git.gnupg.org/cgi-bin/gitweb.cgi?p=gnupg.git;a=blob;f=doc/gpg-agent.texi;h=42ac84019e79e9e7845a673af5e5a3e154c5ba36;hb=HEAD#l96
 #          fixes invalid ioctl error during gpg-based git sign
 export GPG_TTY=$(tty)
@@ -33,7 +33,7 @@ export ELECTRON_OZONE_PLATFORM_HINT=auto
 # https://askubuntu.com/a/1493214
 alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 foliate'
 
-# funcs #######################################################################
+# funcs ####################################################################### funcs
 
 # like win10 python
 alias py=python3
@@ -115,3 +115,47 @@ mkgplv3() {
   git commit -m "license: add gplv3"
   set +x
 }
+
+n () {
+  # from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_sh_zsh
+
+  [ "${NNNLVL:-0}" -eq 0 ] || {
+    echo "nnn is already running"
+      return
+    }
+
+    # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
+    # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
+    # see. To cd on quit only on ^G, remove the "export" and make sure not to
+    # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
+    #      NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+    # stty start undef
+    # stty stop undef
+    # stty lwrap undef
+    # stty lnext undef
+
+    # The command builtin allows one to alias nnn to n, if desired, without
+    # making an infinitely recursive alias
+    command nnn "$@"
+
+    [ ! -f "$NNN_TMPFILE" ] || {
+      . "$NNN_TMPFILE"
+          rm -f -- "$NNN_TMPFILE" > /dev/null
+        }
+      }
+
+# random color vars :3 ######################################################## colors
+
+CDEF="\033[0m"                                     # default color
+CCIN="\033[0;36m"                                  # info color
+CGSC="\033[0;32m"                                  # success color
+CRER="\033[0;31m"                                  # error color
+CWAR="\033[0;33m"                                  # warning color
+b_CDEF="\033[1;37m"                                # bold default color
+b_CCIN="\033[1;36m"                                # bold info color
+b_CGSC="\033[1;32m"                                # bold success color
+b_CRER="\033[1;31m"                                # bold error color
+b_CWAR="\033[1;33m"                                # bold warning color
