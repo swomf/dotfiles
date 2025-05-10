@@ -118,7 +118,7 @@ mkgplv3() {
   set +x
 }
 
-n () {
+f () {
   # from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_sh_zsh
 
   [ "${NNNLVL:-0}" -eq 0 ] || {
