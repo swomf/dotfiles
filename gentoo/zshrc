@@ -35,14 +35,16 @@ alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 foliate'
 
 # funcs ####################################################################### funcs
 
-# like win10 python
-alias py=python3
+alias musescore=~/files/app/musescore/squashfs-root/AppRun # musescore squashfs
+alias py=python3                 # match win10 python
+alias R='R --no-save'            # disable "save workspace image?" prompt
+alias rcs='sudo rc-service'
+alias rcu='sudo rc-update'
+alias lynx='lynx -vikeys'
+alias t=tree
 
-# disable "save workspace image?" prompt
-alias R='R --no-save'
-
-# silly man page skip
-export tldr() {curl cht.sh/$1}
+export lofigirl() {mpv "https://youtube.com/watch?v=jfKfPfyJRdk"} # hiphop radio
+export tldr() {curl cht.sh/"$1"} # silly manpage skip
 
 # run a command and silently detach e.g. stfu chromium
 stfu() {
