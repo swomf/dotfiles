@@ -107,8 +107,8 @@ int update_battery_percent(int *battery_percent, char **charging_str) {
   case 'F':
     *charging_str = "▲"; // \u25B2
     break;
-  default:               // U N
-    *charging_str = " "; // u2003
+  default:                    // U N
+    *charging_str = "\u2002"; // u2002
     break;
   }
 
