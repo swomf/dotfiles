@@ -101,14 +101,14 @@ int update_battery_percent(int *battery_percent, char **charging_str) {
   //		      "Not charging", "Full"
   switch (status) {
   case 'D':
-    *charging_str = "▼";
+    *charging_str = "▼"; // \u25BC
     break;
   case 'C':
   case 'F':
-    *charging_str = "▲";
+    *charging_str = "▲"; // \u25B2
     break;
-  default: // U N
-    *charging_str = " ";
+  default:               // U N
+    *charging_str = " "; // u2003
     break;
   }
 
