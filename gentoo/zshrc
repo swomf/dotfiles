@@ -31,7 +31,7 @@ export GPG_TTY=$(tty)
 export ELECTRON_OZONE_PLATFORM_HINT=auto
 # webkit: nvidia sometimes makes things straight up invisible
 # https://askubuntu.com/a/1493214
-alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 foliate'
+alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 GTK_THEME=Blackbriar-Dark-compact:dark foliate'
 
 # funcs ####################################################################### funcs
 
