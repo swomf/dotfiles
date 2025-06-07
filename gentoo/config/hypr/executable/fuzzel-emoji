@@ -1,5 +1,13 @@
 #!/usr/bin/env sh
-sed '1,/^### DATA ###$/d' $0 | fuzzel --icon-theme=candy-icons --background-color=1A1513dd --text-color=F8D4D2ff --match-color=FFB3B1ff --border-width=2 --border-radius=15 --border-color=EB8A89ff	 --selection-color=585b70ff --selection-text-color=F8D4D2ff --selection-match-color=FFB3B1ff --font="Lexend"  --prompt=">>  " --dmenu | cut -d ' ' -f 1 | tr -d '\n' | wl-copy
+sed '1,/^### DATA ###$/d' $0 \
+  | fuzzel --icon-theme=candy-icons \
+  --background-color=000000dd --text-color=909090ff --match-color=FFB3B1ff \
+  --border-width=2 --border-radius=15 --border-color=FFFFFFff	 \
+  --selection-color=FFFFFFff --selection-text-color=000000ff \
+  --selection-match-color=FFB3B1ff \
+  --prompt-color=E0E0E0ff --prompt=">>  " \
+  --font="Atkinson Hyperlegible" --dmenu \
+  | cut -d ' ' -f 1 | tr -d '\n' | wl-copy
 exit
 ### DATA ###
 😀 grinning face face smile happy joy :D grin
