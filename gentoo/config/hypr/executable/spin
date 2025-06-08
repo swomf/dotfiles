@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-main_monitor="eDP-1"
+monitor="$(hyprctl activeworkspace -j | jq '.monitor' -r)"
 
 # spin screen and touchscreen via hyprctl batch
 # https://wiki.hyprland.org/Configuring/Variables/#touchdevice
@@ -29,13 +29,13 @@ rot() {
   esac
 
   hyprctl --batch \
-    "keyword monitor ${main_monitor},2880x1620@120,0x0,1.50,transform,${direction};\
+    "keyword monitor ${monitor},2880x1620@120,0x0,1.50,transform,${direction};\
     keyword input:touchdevice:transform ${direction};"
   # hyprctl doesnt work with batch and crashes if immediately
   # after a rotation
-  current_wallpaper="$(hyprctl hyprpaper listactive | awk "/${main_monitor}/ {print \$3}")"
+  current_wallpaper="$(hyprctl hyprpaper listactive | awk "/${monitor}/ {print \$3}")"
   if [ ! "$current_wallpaper" = "$(realpath "${wallpaper}")" ]; then
-    sleep .15 && hyprctl hyprpaper wallpaper "${main_monitor}","${wallpaper}"
+    sleep .15 && hyprctl hyprpaper wallpaper "${monitor}","${wallpaper}"
   fi
 
 }
