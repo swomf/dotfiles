@@ -33,6 +33,13 @@ export ELECTRON_OZONE_PLATFORM_HINT=auto
 # https://askubuntu.com/a/1493214
 alias foliate='env WEBKIT_DISABLE_DMABUF_RENDERER=1 GTK_THEME=Blackbriar-Dark-compact:dark foliate'
 
+# env vars for Gentoo:app-emulation/wine-proton
+#   See /var/db/repos/gentoo/app-emulation/wine-proton/files/README.gentoo
+export WINEFSYNC=1                # requires linux kernel >=5.16
+export WINE_LARGE_ADDRESS_AWARE=1 # helps w/ 32bit memory
+# WINEPREFIX=/path/to setup_dxvk.sh install --symlink # requires app-emulation/dxvk
+# WINEPREFIX=/path/to setup_vkd3d_proton.sh install --symlink # requires app-emulation/vkd3d-proton
+
 # funcs ####################################################################### funcs
 
 alias musescore=~/files/app/musescore/squashfs-root/AppRun # musescore squashfs
