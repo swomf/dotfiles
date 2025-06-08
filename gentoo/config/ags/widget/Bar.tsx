@@ -82,7 +82,10 @@ function Sound() {
       value={bind(speaker, "volume")}
     />
 
-
+  // TODO: - flip color of volume icon when button pressed,
+  //         iff initially white
+  //       - add right click menu (upstream docs incorrect)
+  //         to execAsync easyeffects and pavucontrol
   return <box vertical className="volume">
     {revealer}
     <button onClicked={() => {
@@ -91,17 +94,14 @@ function Sound() {
       //revealer.set_reveal_child(!revealer.get_reveal_child());
       //console.log(revealer.revealChild, revealer.childRevealed, revealer.get_transition_duration(), revealer.get_transition_type(), revealer.get_child().visible)
     }}>
-      <label
-        yalign={0}
-        angle={90}
-        widthChars={5}
-        label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
-    </button>
-    <button
-      onClicked={() => {
-        execAsync("pavucontrol");
-      }}>
-      <icon icon={bind(speaker, "volumeIcon")} />
+      <box vertical>
+        <label
+          yalign={0}
+          angle={90}
+          widthChars={5}
+          label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
+        <icon icon={bind(speaker, "volumeIcon")} />
+      </box>
     </button>
   </box >
 }
