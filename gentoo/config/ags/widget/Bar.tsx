@@ -15,6 +15,7 @@ function SysTray() {
     {bind(tray, "items").as(items => items.map(item => (
       <menubutton
         vexpand
+        hexpand
         tooltipMarkup={bind(item, "tooltipMarkup")}
         usePopover={false}
         actionGroup={bind(item, "actionGroup").as(ag => ["dbusmenu", ag])}
