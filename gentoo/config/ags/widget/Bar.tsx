@@ -11,7 +11,7 @@ import Tray from "gi://AstalTray"
 function SysTray() {
   const tray = Tray.get_default()
 
-  return <box className="tray">
+  return <box className="tray" vertical>
     {bind(tray, "items").as(items => items.map(item => (
       <menubutton
         vexpand
