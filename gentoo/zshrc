@@ -127,36 +127,45 @@ mkgplv3() {
   set +x
 }
 
+
+# nnn config ################################################################## nnn
+
 f () {
-  # from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_sh_zsh
+  export NNN_FIFO="/tmp/nnn.fifo"   # buffer for previews
+  if kitten icat --detect-support &>/dev/null; then
+    export NNN_PLUG="p:preview-tui" # install -D {/usr/share,~/.config}/nnn/plugins/preview-tui
+  fi                                  # type `;p` in kitty for preview.
+  export SPLIT='v'                  # split kitty vertically
 
-  [ "${NNNLVL:-0}" -eq 0 ] || {
+
+  if [ ! "${NNNLVL:-0}" -eq 0 ]; then
     echo "nnn is already running"
-      return
-    }
+    return
+  fi
 
-    # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
-    # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
-    # see. To cd on quit only on ^G, remove the "export" and make sure not to
-    # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
-    #      NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
-    export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+  # from https://github.com/jarun/nnn/blob/master/misc/quitcd/quitcd.bash_sh_zsh
+  # The behaviour is set to cd on quit (nnn checks if NNN_TMPFILE is set)
+  # If NNN_TMPFILE is set to a custom path, it must be exported for nnn to
+  # see. To cd on quit only on ^G, remove the "export" and make sure not to
+  # use a custom path, i.e. set NNN_TMPFILE *exactly* as follows:
+  #      NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+  export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
 
-    # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
-    # stty start undef
-    # stty stop undef
-    # stty lwrap undef
-    # stty lnext undef
+  # Unmask ^Q (, ^V etc.) (if required, see `stty -a`) to Quit nnn
+  # stty start undef
+  # stty stop undef
+  # stty lwrap undef
+  # stty lnext undef
 
-    # The command builtin allows one to alias nnn to n, if desired, without
-    # making an infinitely recursive alias
-    command nnn "$@"
+  # The command builtin allows one to alias nnn to n, if desired, without
+  # making an infinitely recursive alias
+  command nnn "$@"
 
-    [ ! -f "$NNN_TMPFILE" ] || {
-      . "$NNN_TMPFILE"
-          rm -f -- "$NNN_TMPFILE" > /dev/null
-        }
-      }
+  if [ -f "$NNN_TMPFILE" ]; then
+    . "$NNN_TMPFILE"
+    rm -f -- "$NNN_TMPFILE" > /dev/null
+  fi
+}
 
 # random color vars :3 ######################################################## colors
 
