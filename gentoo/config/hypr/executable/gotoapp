@@ -2,17 +2,18 @@
 
 class=
 app=
-bring_to_workspace=
+send_to_workspace=
 
 usage() {
   cat <<EOF
   $0 usage:
-  -a   specify app, as seen in PATH
-  (e.g. easyeffects)
-  -c   specify class iff different from app,
-  as seen in hyprctl clients
-  (e.g. com.github.wwmm.easyeffects)
-  -b   brings focused app to workspace also
+  -a, --app     specify app, as seen in PATH
+                (e.g. easyeffects)
+  -c, --class   specify class iff different from app,
+                as seen in hyprctl clients
+                (e.g. com.github.wwmm.easyeffects)
+  -s, --send-to-workspace
+                sends focused app to workspace instead
 EOF
 }
 
@@ -26,7 +27,7 @@ while [ $# -gt 0 ]; do
     class="$2"
     shift
     ;;
-  -b | --bring_to_workspace) bring_to_workspace="yes" ;;
+  -s | --send-to-workspace) send_to_workspace="yes" ;;
   --)
     shift
     break
@@ -39,7 +40,7 @@ while [ $# -gt 0 ]; do
   esac
   shift
 done
-if [ -z "$class" ] && [ -z "$app" ] && [ -z "$bring_to_workspace" ]; then
+if [ -z "$class" ] && [ -z "$app" ] && [ -z "$send_to_workspace" ]; then
   usage
   exit 1
 fi
@@ -51,15 +52,14 @@ fi
 workspace="$(hyprctl clients -j | jq '.[] | select(.class == "'"$class"'") | .workspace.id')"
 
 if [ -n "$workspace" ]; then
-  if [ -z "$bring_to_workspace" ]; then
+  if [ -z "$send_to_workspace" ]; then
     hyprctl --batch "
     dispatch workspace $workspace;
     dispatch focuswindow class:$app
     "
   else
     hyprctl --batch "
-    dispatch movetoworkspace $workspace;
-    dispatch focuswindow class:$app
+    dispatch movetoworkspacesilent $workspace;
     "
   fi
 elif [ -n "$app" ]; then
