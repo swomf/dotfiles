@@ -1,0 +1,9 @@
+{
+  "href": {
+    "prefix": "href",
+    "description": "Add a link",
+    "body": [
+      "<a href=\"$1\" ${2:target=\"_blank\"}>$3</a>"
+    ]
+  }
+}

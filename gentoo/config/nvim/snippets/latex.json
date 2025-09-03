@@ -1,0 +1,31 @@
+{
+  "aligned block": {
+    "prefix": "maths",
+    "description": "make a begin{aligned} block",
+    "body": [
+      "$$",
+      "\\begin{aligned}",
+      "$1",
+      "\\end{aligned}",
+      "$$"
+    ]
+  },
+  "problem": {
+    "prefix": "prob",
+    "description": "make a problem block",
+    "body": [
+      "\\begin{problem}{$1}",
+      "$2",
+      "\\end{problem}"
+    ]
+  },
+  "solution": {
+    "prefix": "sol",
+    "description": "make a solution block",
+    "body": [
+      "\\begin{solution}",
+      "$1",
+      "\\end{solution}"
+    ]
+  }
+}

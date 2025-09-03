@@ -1,0 +1,18 @@
+{
+  "Start Java onefile": {
+    "prefix": "init",
+    "description": "Basic Java whiteboard boilerplate",
+    "body": [
+      "$1",
+      "",
+      "import java.util.Scanner;",
+      "public class $TM_FILENAME_BASE {",
+      "  public static void main(String[] args) {",
+      "    Scanner s = new Scanner(System.in);\n",
+      "      $2\n",
+      "    s.close();",
+      "  }",
+      "}"
+    ]
+  }
+}
