@@ -15,6 +15,8 @@ home_dots=(
   ".config/anyrun"
   ".config/swappy"
   ".config/nnn"
+  ".config/nvim/lua"
+  ".config/nvim/snippets"
   ".zshrc"
 )
 
@@ -25,7 +27,8 @@ for i in "${home_dots[@]}"; do
   # Remove leading dot and eliminate final / and letters afterwards
   #   e.g. .zshrc -> zshrc
   #   e.g. .config/hypr -> config
-  form="$(echo ${i} | sed 's/^\.//g' | sed 's/\/.*//g')"
+  #   e.g. .config/nvim/lua -> config/nvim
+  form="$(echo ${i} | sed 's/^\.//g' | xargs dirname)"
   arrow_msg "Sync ${HOME}/${i} -> ${script_dir}/${form}"
   rsync \
     --archive \
