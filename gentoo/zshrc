@@ -15,6 +15,8 @@ export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 # local/bin
 export PATH="${PATH}:${HOME}/.local/bin"
+# nvidia cuda toolkit
+export PATH="${PATH}:/opt/cuda/bin"
 
 # completions ################################################################# completions
 eval "$(zoxide init zsh)"
