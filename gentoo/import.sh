@@ -28,7 +28,7 @@ for i in "${home_dots[@]}"; do
   #   e.g. .zshrc -> zshrc
   #   e.g. .config/hypr -> config
   #   e.g. .config/nvim/lua -> config/nvim
-  form="$(echo ${i} | sed 's/^\.//g' | xargs dirname)"
+  form="${i#.}" && form="${form%/*}"
   arrow_msg "Sync ${HOME}/${i} -> ${script_dir}/${form}"
   rsync \
     --archive \
