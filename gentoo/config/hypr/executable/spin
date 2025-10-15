@@ -1,6 +1,7 @@
 #!/usr/bin/env sh
 
 monitor="$(hyprctl activeworkspace -j | jq '.monitor' -r)"
+scale="$(hyprctl monitors -j | jq '.[]' | jq '.scale')"
 
 # spin screen and touchscreen via hyprctl batch
 # https://wiki.hyprland.org/Configuring/Variables/#touchdevice
@@ -29,7 +30,7 @@ rot() {
   esac
 
   hyprctl --batch \
-    "keyword monitor ${monitor},2880x1620@120,0x0,1.50,transform,${direction};\
+    "keyword monitor ${monitor},2880x1620@120,0x0,${scale},transform,${direction};\
     keyword input:touchdevice:transform ${direction};"
   # hyprctl doesnt work with batch and crashes if immediately
   # after a rotation
