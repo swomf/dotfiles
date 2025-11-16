@@ -27,5 +27,14 @@
       "$1",
       "\\end{solution}"
     ]
+  },
+  "response": {
+    "prefix": "resp",
+    "description": "make a left-line block",
+    "body": [
+      "\\begin{response}",
+      "$1",
+      "\\end{response}"
+    ]
   }
 }
