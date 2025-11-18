@@ -36,5 +36,14 @@
       "$1",
       "\\end{response}"
     ]
+  },
+  "matr": {
+    "prefix": "matr",
+    "description": "make a bmatrix",
+    "body": [
+      "\\begin{bmatrix}",
+      "$1",
+      "\\end{bmatrix}"
+    ]
   }
 }
