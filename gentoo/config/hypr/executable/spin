@@ -1,7 +1,15 @@
 #!/usr/bin/env sh
 
+# FIXME: with multiple monitors, spinning arbitrarily will cause
+#        collision i.e. cursor shows up on both monitors
+
 monitor="$(hyprctl activeworkspace -j | jq '.monitor' -r)"
-scale="$(hyprctl monitors -j | jq '.[]' | jq '.scale')"
+monitor_json="$(hyprctl monitors -j | jq '.[] | select(.name == "'"${monitor}"'")')"
+
+scale="$(echo "${monitor_json}" | jq '.scale')"
+width="$(echo "${monitor_json}" | jq '.width')"
+height="$(echo "${monitor_json}" | jq '.height')"
+refresh_rate="$(echo "${monitor_json}" | jq '.refreshRate')"
 
 # spin screen and touchscreen via hyprctl batch
 # https://wiki.hyprland.org/Configuring/Variables/#touchdevice
@@ -29,11 +37,11 @@ rot() {
     ;;
   esac
 
-  hyprctl --batch \
-    "keyword monitor ${monitor},2880x1620@120,0x0,${scale},transform,${direction};\
-    keyword input:touchdevice:transform ${direction};"
+  hyprctl keyword monitor "${monitor}","${width}"x"${height}"@"${refresh_rate}",0x0,"${scale}",transform,"${direction}"
+  # touch device rotation doesn't appear reliable
+  #keyword input:touchdevice:transform ${direction};"
   # hyprctl doesnt work with batch and crashes if immediately
-  # after a rotation
+  # after a rotation (comment: is this still true?)
   current_wallpaper="$(hyprctl hyprpaper listactive | awk "/${monitor}/ {print \$3}")"
   if [ ! "$current_wallpaper" = "$(realpath "${wallpaper}")" ]; then
     sleep .15 && hyprctl hyprpaper wallpaper "${monitor}","${wallpaper}"
