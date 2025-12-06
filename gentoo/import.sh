@@ -4,8 +4,8 @@ set -euo pipefail
 
 script_dir="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
 
-arrow_msg() {
-  printf "$(tput setaf 2)$(tput bold) => $(tput sgr0)$(tput bold)${1}$(tput sgr0)\n"
+sync_msg() {
+  printf "$(tput setaf 2)$(tput bold) => $(tput sgr0)$(tput bold)Sync ${1}$(tput setaf 2)$(tput bold) -> $(tput sgr0)$(tput bold)${2}$(tput sgr0)\n"
 }
 
 home_dots=(
@@ -29,7 +29,7 @@ for i in "${home_dots[@]}"; do
   #   e.g. .config/hypr -> config
   #   e.g. .config/nvim/lua -> config/nvim
   form="${i#.}" && form="${form%/*}"
-  arrow_msg "Sync ${HOME}/${i} -> ${script_dir}/${form}"
+  sync_msg "${HOME}/${i}" "${script_dir}/${form}"
   rsync \
     --archive \
     --verbose \
@@ -41,7 +41,7 @@ for i in "${home_dots[@]}"; do
 done
 
 for i in "${etc_configs[@]}"; do
-  arrow_msg "Sync /etc/${i} -> ${script_dir}/etc"
+  sync_msg "/etc/${i}" "${script_dir}/etc"
   rsync \
     --archive \
     --verbose \
