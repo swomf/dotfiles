@@ -12,6 +12,7 @@ home_dots=(
   ".config/ags"
   ".config/hypr"
   ".config/foot"
+  ".config/kitty"
   ".config/anyrun"
   ".config/swappy"
   ".config/nnn"
