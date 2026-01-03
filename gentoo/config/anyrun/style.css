@@ -5,6 +5,7 @@
 
 window {
   background: transparent;
+  font-size: 1.2rem;
 }
 
 box.main {
@@ -48,6 +49,7 @@ label.match {
 label.match.description {
   font-size: 10px;
   color: @desc-color;
+  font-size: 0.9rem;
 }
 
 label.plugin.info {
