@@ -1,67 +1,76 @@
-* {
-    all: unset;
-    font-size: 1.3rem;
+@define-color accent #e0e0e0;
+@define-color bg-color #0b0f10;
+@define-color fg-color #eeeeee;
+@define-color desc-color #cccccc;
+
+window {
+  background: transparent;
 }
 
-#window,
-#match,
-#entry,
-#plugin,
-#main {
-    background: transparent;
+box.main {
+  padding: 5px;
+  margin: 10px;
+  border-radius: 10px;
+  border: 2px solid @accent;
+  background-color: @bg-color;
+  box-shadow: 0 0 5px black;
 }
 
-#match.activatable {
-    border-radius: 16px;
-    padding: 0.3rem 0.9rem;
-    margin-top: 0.01rem;
-}
-#match.activatable:first-child {
-    margin-top: 0.7rem;
-}
-#match.activatable:last-child {
-    margin-bottom: 0.6rem;
+
+text {
+  min-height: 30px;
+  padding: 5px;
+  border-radius: 5px;
+  color: @fg-color;
 }
 
-#plugin:hover #match.activatable {
-    border-radius: 10px;
-    padding: 0.3rem;
-    margin-top: 0.01rem;
-    margin-bottom: 0;
+.matches {
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 10px;
 }
 
-#match:selected,
-#match:hover,
-#plugin:hover {
-    background: #2e3131;
+box.plugin:first-child {
+  margin-top: 5px;
 }
 
-#entry {
-    background: #0b0f10;
-    border: 1px solid #0b0f10;
-    border-radius: 16px;
-    margin: 0.5rem;
-    padding: 0.3rem 1rem;
+box.plugin.info {
+  min-width: 200px;
 }
 
-list > #plugin {
-    border-radius: 16px;
-    margin: 0 0.3rem;
-}
-list > #plugin:first-child {
-    margin-top: 0.3rem;
-}
-list > #plugin:last-child {
-    margin-bottom: 0.3rem;
-}
-list > #plugin:hover {
-    padding: 0.6rem;
+list.plugin {
+  background-color: rgba(0, 0, 0, 0);
 }
 
-box#main {
-    background: #0b0f10;
-    box-shadow: inset 0 0 0 1px #0b0f10, 0 0 0 1px #0b0f10;
-    border: 2px solid #e0e0e0;
-    border-radius: 20px;
-    padding: 0.3rem;
+label.match {
+  color: @fg-color;
+}
+
+label.match.description {
+  font-size: 10px;
+  color: @desc-color;
+}
+
+label.plugin.info {
+  font-size: 14px;
+  color: @fg-color;
+}
+
+.match {
+  background: transparent;
+}
+
+.match:selected {
+  border-left: 4px solid @accent;
+  background: transparent;
+  animation: fade 0.1s linear;
+}
+
+@keyframes fade {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
