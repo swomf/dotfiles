@@ -62,7 +62,6 @@ label.plugin.info {
 .match:selected {
   border-left: 4px solid @accent;
   background: transparent;
-  animation: fade 0.1s linear;
 }
 
 @keyframes fade {
