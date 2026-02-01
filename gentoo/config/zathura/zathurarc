@@ -1,0 +1,7 @@
+# dark mode
+set recolor
+# synctex
+set synctex true
+set synctex-editor-command "nvim -c 'VimtexInverseSearch %{line} %{input}'"
+# clip affects global clip
+set selection-clipboard clipboard
