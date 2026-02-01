@@ -3,11 +3,11 @@
     "prefix": "maths",
     "description": "make a begin{aligned} block",
     "body": [
-      "$$",
+      "\\[",
       "\\begin{aligned}",
       "$1",
       "\\end{aligned}",
-      "$$"
+      "\\]"
     ]
   },
   "problem": {
