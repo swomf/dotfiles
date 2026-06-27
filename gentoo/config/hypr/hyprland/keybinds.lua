@@ -1,3 +1,58 @@
+-- funcs
+
+local spin = require("hyprland/spin")
+
+local function togglefloat_center()
+  local win = hl.get_active_window()
+  if not win then
+    return
+  end
+  if win.floating then
+    hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+    return
+  end
+  local mon = hl.get_active_monitor()
+  local w = mon and math.floor(mon.width / mon.scale * 0.8)
+  local h = mon and math.floor(mon.height / mon.scale * 0.8)
+  hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+  hl.dispatch(hl.dsp.window.resize({ x = w, y = h }))
+  hl.dispatch(hl.dsp.window.center())
+end
+
+-- Toggle tiled->float (grow: float preserving tiled position/size, inset 4px for borders)
+local function togglefloat_grow()
+  local win = hl.get_active_window()
+  if not win then
+    return
+  end
+  if win.floating then
+    hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+    return
+  end
+  local at, size = win.at, win.size
+  local x = type(at) == "table" and (at.x or at[1]) or 0
+  local y = type(at) == "table" and (at.y or at[2]) or 0
+  local w = type(size) == "table" and (size.x or size[1]) or 0
+  local h = type(size) == "table" and (size.y or size[2]) or 0
+  hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
+  hl.dispatch(hl.dsp.window.resize({ x = w - 8, y = h - 8 }))
+  hl.dispatch(hl.dsp.exec_cmd(string.format("hyprctl dispatch moveactive exact %d %d", x + 4, y + 4)))
+end
+
+local function ws_back20()
+  local ws = hl.get_active_workspace()
+  if ws and ws.id > 20 then
+    hl.dispatch(hl.dsp.focus({ workspace = "-20" }))
+  end
+end
+
+local function win_back20()
+  local ws = hl.get_active_workspace()
+  if ws and ws.id > 20 then
+    hl.dispatch(hl.dsp.window.move({ workspace = "-20", follow = true }))
+  end
+end
+
 -- stylua: ignore start
 
 -- ######################### Media / hardware keybinds #########################
@@ -35,13 +90,13 @@ hl.bind("SUPER + period", hl.dsp.exec_cmd("pkill fuzzel || ~/.config/hypr/execut
 hl.bind("SUPER + comma",  hl.dsp.exec_cmd("pkill fuzzel || ~/git/fuzzel-math/fuzzel-math"))
 hl.bind("SUPER + Q",      hl.dsp.window.close())
 hl.bind("ALT + F4",       hl.dsp.window.close())
-hl.bind("SHIFT + ALT + F",         hl.dsp.exec_cmd("~/.config/hypr/executable/togglefloat center"))
-hl.bind("SHIFT + SUPER + F",       hl.dsp.exec_cmd("~/.config/hypr/executable/togglefloat grow"))
+hl.bind("SHIFT + ALT + F",         togglefloat_center)
+hl.bind("SHIFT + SUPER + F",       togglefloat_grow)
 hl.bind("CTRL + SHIFT + ALT + F",  function()
-    hl.dispatch(hl.dsp.window.float())
+    hl.dispatch(hl.dsp.window.float({ action = "toggle" }))
     hl.dispatch(hl.dsp.window.resize({ x = 640, y = 480 }))
 end)
-hl.bind("SHIFT + SUPER + ALT + F", hl.dsp.exec_cmd("~/.config/hypr/executable/togglefloat center"))
+hl.bind("SHIFT + SUPER + ALT + F", togglefloat_center)
 hl.bind("SHIFT + SUPER + ALT + Q", hl.dsp.exec_cmd("hyprctl kill"))
 
 -- Screenshot, Record, OCR, Color picker, Clipboard history
@@ -95,14 +150,14 @@ hl.bind("SUPER + mouse:275",           hl.dsp.focus({ workspace = "-1" }))
 hl.bind("SUPER + mouse:276",           hl.dsp.focus({ workspace = "+1" }))
 hl.bind("CTRL + SUPER + bracketleft",  hl.dsp.focus({ workspace = "-1" }))
 hl.bind("CTRL + SUPER + bracketright", hl.dsp.focus({ workspace = "+1" }))
-hl.bind("CTRL + SUPER + up",   hl.dsp.exec_cmd([[test "$(hyprctl activeworkspace -j|jq '.id')" -le 20 || hyprctl dispatch workspace -20]]))
-hl.bind("CTRL + SUPER + W",    hl.dsp.exec_cmd([[test "$(hyprctl activeworkspace -j|jq '.id')" -le 20 || hyprctl dispatch workspace -20]]))
+hl.bind("CTRL + SUPER + up",   ws_back20)
+hl.bind("CTRL + SUPER + W",    ws_back20)
 hl.bind("CTRL + SUPER + down", hl.dsp.focus({ workspace = "+20" }))
 hl.bind("CTRL + SUPER + S",    hl.dsp.focus({ workspace = "+20" }))
 
 -- Move window to workspace (follow)
-hl.bind("CTRL + SHIFT + SUPER + up",   hl.dsp.exec_cmd([[test "$(hyprctl activeworkspace -j|jq '.id')" -le 20 || hyprctl dispatch movetoworkspace -20]]))
-hl.bind("CTRL + SHIFT + SUPER + W",    hl.dsp.exec_cmd([[test "$(hyprctl activeworkspace -j|jq '.id')" -le 20 || hyprctl dispatch movetoworkspace -20]]))
+hl.bind("CTRL + SHIFT + SUPER + up",   win_back20)
+hl.bind("CTRL + SHIFT + SUPER + W",    win_back20)
 hl.bind("CTRL + SHIFT + SUPER + down", hl.dsp.window.move({ workspace = "+20", follow = true }))
 hl.bind("CTRL + SHIFT + SUPER + S",    hl.dsp.window.move({ workspace = "+20", follow = true }))
 
@@ -218,14 +273,14 @@ hl.bind("SUPER + ALT + down",  hl.dsp.window.resize({ x = 0,   y = 20,  relative
 -- hl.bind("CTRL + SUPER + backslash", hl.dsp.window.resize({ x = 640, y = 480 }))
 
 -- Spin monitor
-hl.bind("CTRL + SHIFT + ALT + A",     hl.dsp.exec_cmd("~/.config/hypr/executable/spin left"))
-hl.bind("CTRL + SHIFT + ALT + S",     hl.dsp.exec_cmd("~/.config/hypr/executable/spin down"))
-hl.bind("CTRL + SHIFT + ALT + W",     hl.dsp.exec_cmd("~/.config/hypr/executable/spin up"))
-hl.bind("CTRL + SHIFT + ALT + D",     hl.dsp.exec_cmd("~/.config/hypr/executable/spin right"))
-hl.bind("CTRL + SHIFT + ALT + Left",  hl.dsp.exec_cmd("~/.config/hypr/executable/spin left"))
-hl.bind("CTRL + SHIFT + ALT + Down",  hl.dsp.exec_cmd("~/.config/hypr/executable/spin down"))
-hl.bind("CTRL + SHIFT + ALT + Up",    hl.dsp.exec_cmd("~/.config/hypr/executable/spin up"))
-hl.bind("CTRL + SHIFT + ALT + Right", hl.dsp.exec_cmd("~/.config/hypr/executable/spin right"))
+hl.bind("CTRL + SHIFT + ALT + A",     spin.left)
+hl.bind("CTRL + SHIFT + ALT + S",     spin.down)
+hl.bind("CTRL + SHIFT + ALT + W",     spin.up)
+hl.bind("CTRL + SHIFT + ALT + D",     spin.right)
+hl.bind("CTRL + SHIFT + ALT + Left",  spin.left)
+hl.bind("CTRL + SHIFT + ALT + Down",  spin.down)
+hl.bind("CTRL + SHIFT + ALT + Up",    spin.up)
+hl.bind("CTRL + SHIFT + ALT + Right", spin.right)
 
 -- Tag window effects (toggle via dispatch)
 hl.bind("SUPER + B", hl.dsp.window.tag({ tag = "blurry" }))
