@@ -119,14 +119,14 @@ hl.bind("SUPER + R", hl.dsp.exec_cmd("anyrun"))
 -- ########################### Hyprland window/workspace binds ############################
 
 -- Swap windows
-hl.bind("SUPER + SHIFT + left",  hl.dsp.window.swap({ direction = "l" }))
-hl.bind("SUPER + SHIFT + A",     hl.dsp.window.swap({ direction = "l" }))
-hl.bind("SUPER + SHIFT + right", hl.dsp.window.swap({ direction = "r" }))
-hl.bind("SUPER + SHIFT + D",     hl.dsp.window.swap({ direction = "r" }))
-hl.bind("SUPER + SHIFT + up",    hl.dsp.window.swap({ direction = "u" }))
-hl.bind("SUPER + SHIFT + W",     hl.dsp.window.swap({ direction = "u" }))
-hl.bind("SUPER + SHIFT + down",  hl.dsp.window.swap({ direction = "d" }))
-hl.bind("SUPER + SHIFT + S",     hl.dsp.window.swap({ direction = "d" }))
+hl.bind("SUPER + SHIFT + left",  hl.dsp.window.move({ direction = "l" }))
+hl.bind("SUPER + SHIFT + A",     hl.dsp.window.move({ direction = "l" }))
+hl.bind("SUPER + SHIFT + right", hl.dsp.window.move({ direction = "r" }))
+hl.bind("SUPER + SHIFT + D",     hl.dsp.window.move({ direction = "r" }))
+hl.bind("SUPER + SHIFT + up",    hl.dsp.window.move({ direction = "u" }))
+hl.bind("SUPER + SHIFT + W",     hl.dsp.window.move({ direction = "u" }))
+hl.bind("SUPER + SHIFT + down",  hl.dsp.window.move({ direction = "d" }))
+hl.bind("SUPER + SHIFT + S",     hl.dsp.window.move({ direction = "d" }))
 hl.bind("SUPER + P",             hl.dsp.window.pin())
 
 -- Move focus (arrow keys and WASD)
