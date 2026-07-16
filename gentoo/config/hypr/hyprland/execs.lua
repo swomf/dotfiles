@@ -1,6 +1,8 @@
 hl.on("hyprland.start", function()
   -- Bar, wallpaper
   hl.exec_cmd("hyprpaper")
+  -- oled
+  hl.exec_cmd("hypridle")
   -- hl.exec_cmd("swww-daemon --format xrgb")
   -- hl.exec_cmd("/usr/lib/geoclue-2.0/demos/agent & gammastep")
   hl.exec_cmd("sleep 1 && gentoo-pipewire-launcher")
