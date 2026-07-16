@@ -80,15 +80,30 @@ hl.config({
     swallow_regex = "(foot|kitty|allacritty|Alacritty)",
     disable_hyprland_logo = true,
     force_default_wallpaper = 0,
-    -- new_window_takes_over_fullscreen was renamed; closest equivalent:
     on_focus_under_fullscreen = 2,
     allow_session_lock_restore = true,
     initial_workspace_tracking = false,
   },
 })
 
--- Gestures: workspace_swipe + workspace_swipe_fingers removed in 0.55, use hl.gesture instead
+-- repeated in keybinds.lua :/
+local function ws_back20()
+  local ws = hl.get_active_workspace()
+  if ws and ws.id > 20 then
+    hl.dispatch(hl.dsp.focus({ workspace = "-20" }))
+  end
+end
+
+-- gestures
 hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
+hl.gesture({ fingers = 4, direction = "up", action = ws_back20 })
+hl.gesture({
+  fingers = 4,
+  direction = "down",
+  action = function()
+    hl.dispatch(hl.dsp.focus({ workspace = "+20" }))
+  end,
+})
 hl.config({
   gestures = {
     workspace_swipe_invert = false,
