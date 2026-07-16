@@ -4,7 +4,7 @@
 -- stylua: ignore start
 hl.monitor({ output = "",         mode = "preferred",    position = "auto",   scale = 1 })
 hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60", position = "1920x0", scale = 1, mirror = "eDP-1" })
-hl.monitor({ output = "eDP-1",    mode = "2880x1620@60", position = "0x0",    scale = 1.5 })
+hl.monitor({ output = "eDP-1",    mode = "2880x1620@120", position = "0x0",    scale = 1.5 })
 -- hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@75", position = "1920x0", scale = 1 })
 -- stylua: ignore end
 
@@ -73,7 +73,6 @@ hl.config({
 
   misc = {
     vrr = 1,
-    -- layers_hog_keyboard_focus = true,  -- was layers_hog_mouse_focus in old config
     focus_on_activate = true,
     animate_manual_resizes = false,
     animate_mouse_windowdragging = false,
