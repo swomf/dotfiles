@@ -27,6 +27,9 @@ hl.window_rule({ match = { title = "^(Open Folder)(.*)$" }, float = true })
 hl.window_rule({ match = { title = "^(Save As)(.*)$" }, float = true })
 hl.window_rule({ match = { title = "^(Library)(.*)$" }, float = true })
 
+-- Floaters
+hl.window_rule({ match = { initial_class = "^com.github.wwmm.easyeffects$" }, float = true, size = { 1400, 800 } })
+
 -- Tearing
 hl.window_rule({ match = { class = ".*\\.exe" }, immediate = true })
 hl.window_rule({ match = { class = "steam_app" }, immediate = true })

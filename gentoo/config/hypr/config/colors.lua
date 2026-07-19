@@ -1,5 +1,3 @@
--- exec = export SLURP_ARGS='-d -c FFDAD4BB -b 673B3444 -s 00000000'
-
 hl.config({
   general = {
     col = {
@@ -12,5 +10,5 @@ hl.config({
   },
 })
 
--- Pinned window border
+-- pinned window border
 hl.window_rule({ match = { pin = true }, border_color = "rgba(FFB2BCAA) rgba(FFB2BC77)" })

@@ -3,8 +3,8 @@
 
 -- stylua: ignore start
 hl.monitor({ output = "",         mode = "preferred",    position = "auto",   scale = 1 })
-hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60", position = "1920x0", scale = 1, mirror = "eDP-1" })
 hl.monitor({ output = "eDP-1",    mode = "2880x1620@120", position = "0x0",    scale = 1.5 })
+hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@60", position = "1920x0", scale = 1, mirror = "eDP-1" })
 -- hl.monitor({ output = "HDMI-A-1", mode = "1920x1080@75", position = "1920x0", scale = 1 })
 -- stylua: ignore end
 
@@ -20,7 +20,6 @@ hl.config({
     repeat_rate = 35,
     touchpad = {
       disable_while_typing = false,
-      clickfinger_behavior = false,
       scroll_factor = 0.5,
     },
     special_fallthrough = true,
@@ -38,10 +37,6 @@ hl.config({
     gaps_out = 2,
     gaps_workspaces = 50,
     border_size = 2,
-    col = {
-      active_border = "rgba(0DB7D4FF)",
-      inactive_border = "rgba(31313600)",
-    },
     resize_on_border = true,
     no_focus_fallback = true,
     layout = "dwindle",
@@ -50,9 +45,13 @@ hl.config({
   },
 
   dwindle = {
+    -- w/o preserve_split its kinda disorienting imo.
+    -- i dont know where stuff will go on win close otherwise.
     preserve_split = true,
-    -- no_gaps_when_only = 1,
-    smart_split = false,
+    -- i leave my cursor wherever and dont pay attention to it
+    -- on workspace setups, so i dont think ill use smart split.
+    -- btw smart split implies preserve_split.
+    --smart_split = true,
     smart_resizing = false,
   },
 
@@ -74,36 +73,15 @@ hl.config({
   misc = {
     vrr = 1,
     focus_on_activate = true,
-    animate_manual_resizes = false,
-    animate_mouse_windowdragging = false,
-    enable_swallow = false,
     swallow_regex = "(foot|kitty|allacritty|Alacritty)",
     disable_hyprland_logo = true,
     force_default_wallpaper = 0,
     on_focus_under_fullscreen = 2,
     allow_session_lock_restore = true,
-    initial_workspace_tracking = false,
+    initial_workspace_tracking = false, -- supposed to be an int... idek what this does
   },
 })
 
--- repeated in keybinds.lua :/
-local function ws_back20()
-  local ws = hl.get_active_workspace()
-  if ws and ws.id > 20 then
-    hl.dispatch(hl.dsp.focus({ workspace = "-20" }))
-  end
-end
-
--- gestures
-hl.gesture({ fingers = 4, direction = "horizontal", action = "workspace" })
-hl.gesture({ fingers = 4, direction = "up", action = ws_back20 })
-hl.gesture({
-  fingers = 4,
-  direction = "down",
-  action = function()
-    hl.dispatch(hl.dsp.focus({ workspace = "+20" }))
-  end,
-})
 hl.config({
   gestures = {
     workspace_swipe_invert = false,
@@ -146,27 +124,11 @@ hl.animation({ leaf = "layersIn",      enabled = true,  speed = 3,   bezier = "m
 hl.animation({ leaf = "layersOut",     enabled = true,  speed = 1.6, bezier = "menu_accel" })
 hl.animation({ leaf = "fadeLayersIn",  enabled = true,  speed = 2,   bezier = "menu_decel" })
 hl.animation({ leaf = "fadeLayersOut", enabled = true,  speed = 4.5, bezier = "menu_accel" })
-hl.animation({ leaf = "workspaces",    enabled = true,  speed = 7,   bezier = "menu_decel", style = "slide" })
+hl.animation({ leaf = "workspaces",    enabled = true,  speed = 7,   bezier = "menu_decel", style = "slide" }) -- also see config.keybinds.workspaces
+
 -- hl.animation({ leaf = "workspaces", enabled = true, speed = 2.5, bezier = "softAcDecel", style = "slide" })
 -- hl.animation({ leaf = "workspaces", enabled = true, speed = 7,   bezier = "menu_decel",  style = "slidefade 15%" })
 -- hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "md3_decel", style = "slidefadevert 15%" })
-hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "md3_decel", style = "slidevert" })
+--hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 3, bezier = "md3_decel", style = "slidevert" })
 
 -- stylua: ignore end
-
--- Plugin: hyprexpo (overview)
-if hl.plugin.hyprexpo ~= nil then
-  hl.config({
-    plugin = {
-      hyprexpo = {
-        columns = 3,
-        gap_size = 5,
-        bg_col = "rgb(000000)",
-        workspace_method = "first 1",
-        enable_gesture = false,
-        gesture_distance = 300,
-        gesture_positive = false,
-      },
-    },
-  })
-end
