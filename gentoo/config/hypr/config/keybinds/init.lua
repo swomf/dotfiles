@@ -1,4 +1,5 @@
 require("config.keybinds.workspaces")
+require("config.keybinds.pocket-femtanyl")
 require("config.keybinds.spin-monitor")
 require("config.keybinds.floating-windows")
 require("config.keybinds.goto-app")
