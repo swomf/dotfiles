@@ -10,11 +10,13 @@ hl.env("INPUT_METHOD", "fcitx")
 
 -- ############ Themes #############
 hl.env("QT_QPA_PLATFORM", "wayland")
+hl.env("XCURSOR_THEME", "Blackbriar")
+hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_THEME", "Blackbriar")
 hl.env("HYPRCURSOR_SIZE", "24")
 hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto")
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
-hl.env("QT_STYLE_OVERRIDE", "kvantum")
+-- hl.env("QT_STYLE_OVERRIDE", "kvantum")
 
 -- ######## Screen tearing #########
 -- hl.env("WLR_DRM_NO_ATOMIC", "1")

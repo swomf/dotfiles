@@ -29,6 +29,6 @@ hl.on("hyprland.start", function()
   hl.exec_cmd("wl-paste --watch cliphist store")
 
   -- Cursor
-  hl.exec_cmd("hyprctl setcursor Qogir 32")
-  hl.exec_cmd("sleep 5 && gsettings set org.gnome.desktop.interface cursor-theme Blackbriar && gsettings set org.gnome.desktop.interface cursor-size 32")
+  --hl.exec_cmd("hyprctl setcursor Qogir 32")
+  --hl.exec_cmd("sleep 5 && gsettings set org.gnome.desktop.interface cursor-theme Blackbriar && gsettings set org.gnome.desktop.interface cursor-size 32")
 end)
