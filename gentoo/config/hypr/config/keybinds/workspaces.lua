@@ -121,8 +121,8 @@ for _, id in next, { "Z", "X", "C" } do
 end
 
 -- Scroll through workspaces with (Ctrl+) Super + scroll
-hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "+1" }))
-hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "-1" }))
+hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "-1" }))
+hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "+1" }))
 
 -- // GRID-LIKE WORKSPACE GESTURES
 
