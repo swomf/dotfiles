@@ -1,8 +1,8 @@
-require("config.keybinds.workspaces")
-require("config.keybinds.pocket-femtanyl")
-require("config.keybinds.spin-monitor")
-require("config.keybinds.floating-windows")
-require("config.keybinds.goto-app")
+require("wm.keybinds.workspaces")
+require("wm.keybinds.pocket-femtanyl")
+require("wm.keybinds.spin-monitor")
+require("wm.keybinds.floating-windows")
+require("wm.keybinds.goto-app")
 
 -- stylua: ignore start
 
