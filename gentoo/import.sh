@@ -18,6 +18,7 @@ home_dots=(
   ".config/nnn"
   ".config/nvim/lua"
   ".config/nvim/snippets"
+  ".config/quickshell"
   ".config/zathura"
   ".zshrc"
 )
