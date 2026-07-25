@@ -125,3 +125,4 @@ hl.bind("SUPER + ALT + S",     hl.dsp.window.resize({ x = 0,   y = 20,  relative
 -- tag window effects (see rules.lua)
 hl.bind("SUPER + B", hl.dsp.window.tag({ tag = "blurry" }))
 hl.bind("SUPER + N", hl.dsp.window.tag({ tag = "transparent" }))
+hl.bind("SUPER + P", hl.dsp.window.pin())
