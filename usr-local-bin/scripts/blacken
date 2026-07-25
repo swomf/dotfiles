@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# life is tough on an oled tty.
+printf '\e[0m\e[40m\e[30m\e[2J\e[H\e[?25l'
+sleep infinity
