@@ -1,0 +1,5 @@
+module Local.Theme
+singleton Theme 1.0 Theme.qml
+singleton GtkIconRenderer 1.0 GtkIconRenderer.qml
+GtkIcon 1.0 GtkIcon.qml
+ThemedIcon 1.0 ThemedIcon.qml
