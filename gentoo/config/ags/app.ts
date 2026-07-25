@@ -1,13 +1,13 @@
-import { App } from "astal/gtk3"
+import app from "ags/gtk3/app"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
 import NotificationPopups from "./notifications/NotificationPopups"
 
-App.start({
+app.start({
   css: style,
-  main: () => {
-    const monitors = App.get_monitors();
-    monitors.map(Bar);
-    monitors.map(NotificationPopups);
-  }
+  main() {
+    const monitors = app.get_monitors()
+    monitors.map(Bar)
+    monitors.map(NotificationPopups)
+  },
 })

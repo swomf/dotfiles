@@ -1,6 +1,8 @@
-import { App } from "astal/gtk3"
-import { Variable, GLib, bind, execAsync } from "astal"
-import { Astal, Gtk, Gdk } from "astal/gtk3"
+import app from "ags/gtk3/app"
+import { Astal, Gdk } from "ags/gtk3"
+import { createBinding, createEffect, createState, For, With } from "ags"
+import { createPoll } from "ags/time"
+import GLib from "gi://GLib?version=2.0"
 import Hyprland from "gi://AstalHyprland"
 // import Mpris from "gi://AstalMpris"
 import Battery from "gi://AstalBattery"
@@ -10,98 +12,106 @@ import Tray from "gi://AstalTray"
 
 function SysTray() {
   const tray = Tray.get_default()
+  const items = createBinding(tray, "items")
 
-  return <box className="tray" vertical>
-    {bind(tray, "items").as(items => items.map(item => (
-      <menubutton
-        vexpand
-        hexpand
-        tooltipMarkup={bind(item, "tooltipMarkup")}
-        usePopover={false}
-        actionGroup={bind(item, "actionGroup").as(ag => ["dbusmenu", ag])}
-        menuModel={bind(item, "menuModel")}>
-        <icon gicon={bind(item, "gicon")} />
-      </menubutton>
-    )))}
+  return <box class="tray" vertical>
+    <For each={items}>
+      {item => {
+        const actionGroup = createBinding(item, "actionGroup")
+
+        return (
+          <menubutton
+            vexpand
+            hexpand
+            tooltipMarkup={createBinding(item, "tooltipMarkup")}
+            usePopover={false}
+            menuModel={createBinding(item, "menuModel")}
+            $={self => createEffect(() =>
+              self.insert_action_group("dbusmenu", actionGroup()))}>
+            <icon gicon={createBinding(item, "gicon")} />
+          </menubutton>
+        )
+      }}
+    </For>
   </box>
 }
 
-
 function Wifi() {
-  // TODO add network throughput
-  const { wifi } = Network.get_default()
+  const wifi = Network.get_default().get_wifi()!
 
-  return <icon
-    tooltipText={bind(wifi, "ssid").as(String)}
-    className="Wifi"
-    icon={bind(wifi, "iconName")}
-  />
+  return (
+    <icon
+      tooltipText={createBinding(wifi, "ssid").as(String)}
+      class="Wifi"
+      icon={createBinding(wifi, "iconName")}
+    />
+  )
 }
 
 function CPU() {
-  const cpuTemp = Variable(0).poll(
+  const cpuTemp = createPoll(
+    0,
     2000,
     'cat /sys/class/thermal/thermal_zone0/temp',
-    (stdout: string, prev: number) =>
+    (stdout: string) =>
       Math.round(Number(stdout) / 1000)
   )
   // TODO: reorganize magic constant (this css color) into different file
-  const dangerousTemp = bind(cpuTemp).as(p => p >= 90 ? 'color: #FF7F7F' : '');
+  const dangerousTemp = cpuTemp.as(p => p >= 90 ? 'color: #FF7F7F' : '')
 
-  return <box className="CPU" vertical>
-    <label angle={90} label={bind(cpuTemp).as(p => `${p}°C`)} css={dangerousTemp} />
+  return <box class="CPU" vertical>
+    <label angle={90} label={cpuTemp.as(p => `${p}°C`)} css={dangerousTemp} />
     <icon icon="cpu-symbolic" css={dangerousTemp} />
   </box>
 }
 
 function Memory() {
-  const mem = Variable("0").poll(
-    1000, 'free -h', (out: string, prev: string) => {
+  const mem = createPoll(
+    "0",
+    1000,
+    'free -h',
+    (out: string) => {
       const line: string = out.split('\n')
-        .find(line => line.includes('Mem:'))!;
-      const [total, free] = line.split(/\s+/).splice(1, 2);
-      return `${free} / ${total}`;
+        .find(line => line.includes('Mem:'))!
+      const [total, free] = line.split(/\s+/).splice(1, 2)
+      return `${free} / ${total}`
     }
   )
-  return <box className="Memory" vertical>
-    <label angle={90} label={bind(mem).as(p => p)} />
+  return <box class="Memory" vertical>
+    <label angle={90} label={mem} />
     <icon icon="device_mem" />
   </box>
 }
 
 function Sound() {
-  const speaker = Wp.get_default()?.audio.defaultSpeaker!
-  const revealer =
-    <slider
-      vertical
-      inverted
-      visible={false}
-      min={0}
-      max={1.5}
-      heightRequest={50}
-      onDragged={({ value }) => speaker.volume = value}
-      value={bind(speaker, "volume")}
-    />
+  const speaker = Wp.get_default()!.audio.defaultSpeaker
+  const [sliderVisible, setSliderVisible] = createState(false)
+  const volume = createBinding(speaker, "volume")
+  const volumeIcon = createBinding(speaker, "volumeIcon")
 
   // TODO: - flip color of volume icon when button pressed,
   //         iff initially white
   //       - add right click menu (upstream docs incorrect)
   //         to execAsync easyeffects and pavucontrol
-  return <box vertical className="volume">
-    {revealer}
-    <button onClicked={() => {
-      revealer.visible = !revealer.visible;
-      //revealer.heightRequest = revealer.heightRequest == 50 ? 2 : 50;
-      //revealer.set_reveal_child(!revealer.get_reveal_child());
-      //console.log(revealer.revealChild, revealer.childRevealed, revealer.get_transition_duration(), revealer.get_transition_type(), revealer.get_child().visible)
-    }}>
+  return <box vertical class="volume">
+    <slider
+      vertical
+      inverted
+      visible={sliderVisible}
+      min={0}
+      max={1.5}
+      heightRequest={50}
+      onDragged={({ value }) => speaker.volume = value}
+      value={volume}
+    />
+    <button onClicked={() => setSliderVisible(visible => !visible)}>
       <box vertical>
         <label
           yalign={0}
           angle={90}
           widthChars={5}
-          label={bind(speaker, "volume").as(p => `${Math.floor(p * 100)} %`)} />
-        <icon icon={bind(speaker, "volumeIcon")} />
+          label={volume.as(value => `${Math.floor(value * 100)} %`)} />
+        <icon icon={volumeIcon} />
       </box>
     </button>
   </box >
@@ -110,83 +120,58 @@ function Sound() {
 function BatteryLevel() {
   const bat = Battery.get_default()
 
-  return <box className="Battery"
+  return <box class="Battery"
     vertical
-    visible={bind(bat, "isPresent")}>
-    <label angle={90} label={bind(bat, "percentage").as(p =>
+    visible={createBinding(bat, "isPresent")}>
+    <label angle={90} label={createBinding(bat, "percentage").as(p =>
       `${Math.floor(p * 100)} %`
     )} />
-    <icon icon={bind(bat, "batteryIconName")} />
+    <icon icon={createBinding(bat, "batteryIconName")} />
   </box>
 }
 
-// function Media() {
-//   const mpris = Mpris.get_default()
-
-//   return <box className="Media">
-//     {bind(mpris, "players").as(ps => ps[0] ? (
-//       <box>
-//         <box
-//           className="Cover"
-//           valign={Gtk.Align.CENTER}
-//           css={bind(ps[0], "coverArt").as(cover =>
-//             `background-image: url('${cover}');`
-//           )}
-//         />
-//         <label
-//           label={bind(ps[0], "title").as(() =>
-//             `${ps[0].title} - ${ps[0].artist}`
-//           )}
-//         />
-//       </box>
-//     ) : (
-//         "Nothing Playing"
-//       ))}
-//   </box>
-// }
-
 function Workspaces() {
   const hypr = Hyprland.get_default()
+  const workspaces = createBinding(hypr, "workspaces").as(wss => wss
+    .toSorted((a, b) => a.id - b.id)
+    .filter(ws => ws.id > 0))
+  const focusedWorkspace = createBinding(hypr, "focusedWorkspace")
 
-  return <box className="Workspaces" vertical>
-    {bind(hypr, "workspaces").as(wss => wss
-      .sort((a, b) => a.id - b.id)
-      .filter(ws => ws.id > 0)
-      .map(ws => (
+  return <box class="Workspaces" vertical>
+    <For each={workspaces}>
+      {ws => (
         <button
-          className={bind(hypr, "focusedWorkspace").as(fw =>
-            ws === fw ? "focused" : "")}
+          class={focusedWorkspace.as(fw => ws === fw ? "focused" : "")}
           onClicked={() => ws.focus()}>
           {ws.id}
         </button>
-      ))
-    )}
+      )}
+    </For>
   </box>
 }
 
 function FocusedClient() {
   const hypr = Hyprland.get_default()
-  const focused = bind(hypr, "focusedClient")
+  const focused = createBinding(hypr, "focusedClient")
 
   return <box
-    className="Focused"
+    class="Focused"
     vertical
     visible={focused.as(Boolean)}>
-    {focused.as(client => (
-      client && <label label={bind(client, "title").as(String)} />
-    ))}
+    <With value={focused}>
+      {client => client && <label label={createBinding(client, "title").as(String)} />}
+    </With>
   </box>
 }
 
 function Time({ format = "%Y-%m-%d %H:%M:%S %a" }) {
-  const time = Variable<string>("").poll(1000, () =>
+  const time = createPoll("", 1000, () =>
     GLib.DateTime.new_now_local().format(format)!)
 
   return <label
     angle={90}
-    className="Time"
-    onDestroy={() => time.drop()}
-    label={time()}
+    class="Time"
+    label={time}
   />
 }
 
@@ -195,18 +180,18 @@ export default function Bar(monitor: Gdk.Monitor) {
 
   return <window
     name="bar"
-    setup={self => App.add_window(self)}
-    className="Bar"
+    application={app}
+    class="Bar"
     gdkmonitor={monitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     layer={Astal.Layer.TOP}
     anchor={TOP | LEFT | BOTTOM}>
-    <centerbox vertical>
-      <box hexpand valign={Gtk.Align.START} vertical>
+    <box vertical>
+      <box hexpand vertical>
         <Workspaces />
       </box>
-      <box />
-      <box hexpand valign={Gtk.Align.END} vertical className="BarStuff">
+      <box vexpand />
+      <box hexpand vertical class="BarStuff">
         <SysTray />
         <Wifi />
         <CPU />
@@ -215,6 +200,6 @@ export default function Bar(monitor: Gdk.Monitor) {
         <Sound />
         <Time />
       </box>
-    </centerbox>
+    </box>
   </window>
 }
