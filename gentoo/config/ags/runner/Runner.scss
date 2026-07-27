@@ -1,0 +1,96 @@
+@use "../theme";
+
+$text: #f2f2f2;
+$subtitle: #9a9a9a;
+
+window.Runner {
+  all: unset;
+  background: transparent;
+  color: theme.$fg;
+
+  .runner-shell {
+    min-width: 640px;
+    margin: 36px 24px 0;
+    border: 1px solid theme.$fg;
+    border-radius: 14px;
+    background: theme.$bg;
+  }
+
+  .runner-input {
+    padding: 16px 18px;
+    border-bottom: 1px solid #2a2a2a;
+    // when it has the menu open we have to de-round
+    // the bottom left and bottom right corner of the input
+    border-radius: 13px 13px 0 0;
+    background: #0a0a0a;
+
+    &.empty {
+      border-bottom-color: transparent;
+      // here its rounded normally
+      border-radius: 13px;
+    }
+
+    icon {
+      min-width: 20px;
+      min-height: 20px;
+      margin-right: 14px;
+      color: theme.$fg;
+    }
+
+    entry {
+      all: unset;
+      min-height: 32px;
+      color: $text;
+      font-family: theme.$font;
+      font-size: 20px;
+
+      selection {
+        color: $text;
+      }
+    }
+  }
+
+  .runner-results {
+    padding: 8px;
+
+    button {
+      all: unset;
+      padding: 10px 12px 10px 9px;
+      border-left: 3px solid transparent;
+      border-radius: 0;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      &.selected {
+        background: transparent;
+        border-left-color: $text;
+      }
+    }
+  }
+
+  .runner-result {
+    icon {
+      min-width: 44px;
+      min-height: 44px;
+      margin-right: 14px;
+      font-size: 32px;
+    }
+
+    label {
+      font-family: theme.$font;
+    }
+
+    .title {
+      color: $text;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .description {
+      color: $subtitle;
+      font-size: 13px;
+    }
+  }
+}

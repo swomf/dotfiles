@@ -4,7 +4,6 @@ hl.on("hyprland.start", function()
 
   hl.exec_cmd("sleep 1 && gentoo-pipewire-launcher")
   hl.exec_cmd("sleep 2 && ags run")
-  hl.exec_cmd("anyrun daemon")
 
   -- Input method
   -- hl.exec_cmd("fcitx5")

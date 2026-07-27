@@ -1,12 +1,5 @@
-@use "sass:string";
+@use "../theme";
 
-@function gtkalpha($c, $a) {
-  @return string.unquote("alpha(#{$c},#{$a})");
-}
-
-// https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/theme/Adwaita/_colors-public.scss
-$fg-color: #{"@theme_fg_color"};
-$bg-color: #{"@theme_bg_color"};
 $error: red;
 
 window.NotificationPopups {
@@ -24,26 +17,26 @@ eventbox.Notification {
   >box {
     min-width: 400px;
     border-radius: 13px;
-    background-color: $bg-color;
+    background-color: theme.$bg-theme;
     margin: .5rem 1rem .5rem 1rem;
     // if box-shadow fails, an ugly grey border is created around the box
-    // box-shadow: 2px 3px 8px 0 gtkalpha(black, .4);
-    border: 1pt solid gtkalpha($fg-color, 1);
+    // box-shadow: 2px 3px 8px 0 theme.alpha(black, 0.4);
+    border: 1pt solid theme.alpha(theme.$fg-theme, 1);
   }
   &.critical>box {
-    border: 1pt solid gtkalpha($error, .4);
+    border: 1pt solid theme.alpha($error, .4);
     .header {
       .app-name {
-        color: gtkalpha($error, .8);
+        color: theme.alpha($error, .8);
       }
       .app-icon {
-        color: gtkalpha($error, .6);
+        color: theme.alpha($error, .6);
       }
     }
   }
   .header {
     padding: .5rem;
-    color: gtkalpha($fg-color, 0.5);
+    color: theme.alpha(theme.$fg-theme, 0.5);
     .app-icon {
       margin: 0 .4rem;
     }
@@ -60,9 +53,9 @@ eventbox.Notification {
     button {
       border-radius: 8px;
       &:hover {
-        background-color: gtkalpha($fg-color, .8);
+        background-color: theme.alpha(theme.$fg-theme, .8);
         icon {
-          color: $bg-color;
+          color: theme.$bg-theme;
         }
       }
       padding: .2rem;
@@ -72,20 +65,20 @@ eventbox.Notification {
   }
   separator {
     margin: 0 .4rem;
-    background-color: gtkalpha($fg-color, .1);
+    background-color: theme.alpha(theme.$fg-theme, .1);
   }
   .content {
     margin: 1rem;
     margin-top: .5rem;
     .summary {
       font-size: 1.2em;
-      color: $fg-color;
+      color: theme.$fg-theme;
     }
     .body {
-      color: gtkalpha($fg-color, 0.8);
+      color: theme.alpha(theme.$fg-theme, 0.8);
     }
     .image {
-      border: 1px solid gtkalpha($fg-color, .02);
+      border: 1px solid theme.alpha(theme.$fg-theme, .02);
       margin-right: .5rem;
       border-radius: 9px;
       min-width: 100px;

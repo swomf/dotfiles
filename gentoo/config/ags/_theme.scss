@@ -1,0 +1,15 @@
+@use "sass:string";
+
+$bg: #000000;
+$fg: #e0e0e0;
+$font: "Nimbus Sans";
+
+// because it is sass THEN gtk, sass will see these as quotes,
+// so dont use sass functions on this
+// use alpha()
+$fg-theme: #{"@theme_fg_color"};
+$bg-theme: #{"@theme_bg_color"};
+
+@function alpha($color, $amount) {
+  @return string.unquote("alpha(#{$color},#{$amount})");
+}

@@ -45,12 +45,11 @@ hl.window_rule({ match = { class = "^(gimp.*)$" }, suppress_event = "activatefoc
 
 -- ######## Layer rules ########
 hl.layer_rule({ match = { namespace = "selection" }, no_anim = true }) -- e.g. slurp
-hl.layer_rule({ match = { namespace = "anyrun" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "launcher" }, no_anim = true }) -- fuzzel
 hl.layer_rule({ match = { namespace = "indicator.*" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "hyprpicker" }, no_anim = true })
 
 hl.layer_rule({ match = { namespace = "noanim" }, no_anim = true })
-hl.layer_rule({ match = { namespace = "gtk-layer-shell" }, ignore_alpha = 0 })
+hl.layer_rule({ match = { namespace = "gtk-layer-shell" }, ignore_alpha = 0 }) -- ags astal
 hl.layer_rule({ match = { namespace = "launcher" }, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "notifications" }, ignore_alpha = 0.69 })
