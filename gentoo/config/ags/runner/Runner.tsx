@@ -186,7 +186,7 @@ function presentRunner() {
 }
 
 export default function Runner() {
-  const { TOP } = Astal.WindowAnchor
+  const { TOP, RIGHT, BOTTOM, LEFT } = Astal.WindowAnchor
 
   return (
     <window
@@ -198,42 +198,52 @@ export default function Runner() {
       layer={Astal.Layer.OVERLAY}
       keymode={Astal.Keymode.EXCLUSIVE}
       exclusivity={Astal.Exclusivity.IGNORE}
-      anchor={TOP}
+      anchor={TOP | RIGHT | BOTTOM | LEFT}
       onKeyPressEvent={(_, event) => handleKeyPress(event.get_keyval()[1]) /* yes it does*/}>
-      <box class="runner-shell" vertical>
-        <box class={results.as(items => items.length > 0 ? "runner-input" : "runner-input empty")}>
-          <icon icon="system-search-symbolic" pixelSize={20} />
-          <entry
-            hexpand
-            placeholderText={prompt}
-            onChanged={self => update(self.text)}
-            $={self => entry = self}
-          />
-        </box>
-        <box class="runner-results" vertical visible={results.as(items => items.length > 0)}>
-          <For each={results}>
-            {(result, index) => (
-              <button
-                class={selected.as(current => current === index() ? "selected" : "")}
-                onClicked={() => activateResult(index())}>
-                <box class="runner-result">
-                  {result.icon && <icon icon={result.icon} pixelSize={44} />}
-                  <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
-                    <label class="title" label={result.title} xalign={0} truncate />
-                    <label
-                      class="description"
-                      label={result.description ?? ""}
-                      xalign={0}
-                      truncate
-                      visible={Boolean(result.description)}
-                    />
-                  </box>
-                </box>
-              </button>
-            )}
-          </For>
-        </box>
-      </box>
+      <eventbox onButtonPressEvent={() => {
+        dismissRunner()
+        return true
+      }}>
+        <eventbox
+          halign={Gtk.Align.CENTER}
+          valign={Gtk.Align.START}
+          onButtonPressEvent={() => true}>
+          <box class="runner-shell" vertical>
+            <box class={results.as(items => items.length > 0 ? "runner-input" : "runner-input empty")}>
+              <icon icon="system-search-symbolic" pixelSize={20} />
+              <entry
+                hexpand
+                placeholderText={prompt}
+                onChanged={self => update(self.text)}
+                $={self => entry = self}
+              />
+            </box>
+            <box class="runner-results" vertical visible={results.as(items => items.length > 0)}>
+              <For each={results}>
+                {(result, index) => (
+                  <button
+                    class={selected.as(current => current === index() ? "selected" : "")}
+                    onClicked={() => activateResult(index())}>
+                    <box class="runner-result">
+                      {result.icon && <icon icon={result.icon} pixelSize={44} />}
+                      <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
+                        <label class="title" label={result.title} xalign={0} truncate />
+                        <label
+                          class="description"
+                          label={result.description ?? ""}
+                          xalign={0}
+                          truncate
+                          visible={Boolean(result.description)}
+                        />
+                      </box>
+                    </box>
+                  </button>
+                )}
+              </For>
+            </box>
+          </box>
+        </eventbox>
+      </eventbox>
     </window>
   )
 }
