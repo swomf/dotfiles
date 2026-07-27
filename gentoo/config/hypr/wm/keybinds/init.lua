@@ -31,7 +31,8 @@ hl.bind("CTRL + SHIFT + SUPER + P", hl.dsp.exec_cmd("firefox --private-window ||
 hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("foot -T btop -- btop", {float = true, size = { 1400, 800 }}))
 
 -- Actions
-hl.bind("SUPER + period", hl.dsp.exec_cmd("pkill fuzzel || ~/.config/hypr/executable/fuzzel-emoji"))
+-- see ~/.config/ags/runner/providers/emojidata/update-emoji-data
+hl.bind("SUPER + period", hl.dsp.exec_cmd("~/.config/hypr/executable/search-emoji"))
 hl.bind("SUPER + comma",  hl.dsp.exec_cmd("pkill fuzzel || ~/git/fuzzel-math/fuzzel-math"))
 hl.bind("SUPER + Q",      hl.dsp.window.close())
 hl.bind("ALT + F4",       hl.dsp.window.close())

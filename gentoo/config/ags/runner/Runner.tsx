@@ -6,6 +6,7 @@ import GLib from "gi://GLib?version=2.0"
 import Gdk from "gi://Gdk?version=3.0"
 import Gtk from "gi://Gtk?version=3.0"
 import { appProvider } from "./providers/apps"
+import { emojiProvider } from "./providers/emoji"
 import { rinkProvider } from "./providers/rink"
 import { queryLines } from "./providers/stdin"
 import { symbolProvider } from "./providers/symbols"
@@ -19,19 +20,21 @@ const [results, setResults] = createState<RunnerResult[]>([])
 const [selected, setSelected] = createState(0)
 const [page, setPage] = createState(0)
 const [hasNextPage, setHasNextPage] = createState(false)
-const [prompt] = createState("Search applications")
+const [prompt, setPrompt] = createState("Search applications")
 
 let entry: Gtk.Entry
 let generation = 0
 let stdinLines: string[] | null = null
 let stdinResponse: ((value: string) => void) | null = null
 let pageQuery: ((limit: number, offset: number) => RunnerResult[] | Promise<RunnerResult[]>) | null = null
+let forcedProvider: Provider | null = null
 
 function dismissRunner(value = "") {
   generation++
   const response = stdinResponse
   stdinLines = null
   stdinResponse = null
+  forcedProvider = null
   app.get_window("runner")!.hide()
   if (response) response(value)
 }
@@ -59,9 +62,11 @@ async function update(input: string) {
     return
   }
 
-  const active = providers
-    .map(provider => ({ provider, query: provider.matchInput(input) }))
-    .find((match): match is { provider: Provider; query: string } => match.query !== null)
+  const active = forcedProvider
+    ? { provider: forcedProvider, query: input }
+    : providers
+      .map(provider => ({ provider, query: provider.matchInput(input) }))
+      .find((match): match is { provider: Provider; query: string } => match.query !== null)
   if (!active) {
     setResults([])
     return
@@ -163,18 +168,28 @@ function handleKeyPress(keyval: number) {
 export function openRunner() {
   stdinLines = null
   stdinResponse = null
-  presentRunner()
+  forcedProvider = null
+  presentRunner("Search applications")
+}
+
+export function openEmojiRunner() {
+  stdinLines = null
+  stdinResponse = null
+  forcedProvider = emojiProvider
+  presentRunner("Search emoji")
 }
 
 export function openStdin(lines: string[], response: (value: string) => void) {
   if (stdinResponse) stdinResponse("")
   stdinLines = lines
   stdinResponse = response
-  presentRunner()
+  forcedProvider = null
+  presentRunner("Search")
 }
 
-function presentRunner() {
+function presentRunner(nextPrompt: string) {
   const window = app.get_window("runner")!
+  setPrompt(nextPrompt)
   entry.text = ""
   update("")
   window.show()
@@ -227,6 +242,10 @@ export default function Runner() {
                     onClicked={() => activateResult(index())}>
                     <box class="runner-result">
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
+                      {!result.icon && result.glyph && <label
+                        class="result-glyph"
+                        label={result.glyph}
+                      />}
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
                         <label
                           class="title"

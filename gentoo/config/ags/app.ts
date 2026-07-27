@@ -3,7 +3,7 @@ import GLib from "gi://GLib?version=2.0"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
 import NotificationPopups from "./notifications/NotificationPopups"
-import Runner, { openRunner, openStdin } from "./runner/Runner"
+import Runner, { openEmojiRunner, openRunner, openStdin } from "./runner/Runner"
 
 app.start({
   css: style,
@@ -11,7 +11,8 @@ app.start({
     // https://aylur.github.io/ags/guide/app-cli.html#messaging-from-cli
     const [command, payload] = argv
     if (command === "runner") {
-      openRunner()
+      if (payload === "emoji") openEmojiRunner()
+      else openRunner()
       response("ok")
     } else if (command === "runner-stdin" && payload) {
       try {

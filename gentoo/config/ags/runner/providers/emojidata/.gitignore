@@ -1,0 +1,11 @@
+# version is pinned in the python script
+# so this doesnt need to be in-tree
+emoji-data.generated
+
+
+# python again
+svg
+!svg/.gitkeep
+
+# dont need to commit this i think
+TWEMOJI-LICENSE-GRAPHICS

@@ -80,6 +80,13 @@ window.Runner {
       font-size: 32px;
     }
 
+    .result-glyph {
+      min-width: 44px;
+      min-height: 44px;
+      margin-right: 14px;
+      font-size: 20px;
+    }
+
     label {
       font-family: theme.$font;
     }

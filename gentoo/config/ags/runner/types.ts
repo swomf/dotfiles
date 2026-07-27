@@ -10,6 +10,8 @@ export type RunnerResult = {
   title: string
   description?: string
   icon?: string
+  /** Text displayed in the leading icon-sized slot, for example an emoji. */
+  glyph?: string
   action: ResultAction
 }
 
