@@ -29,6 +29,12 @@ hl.window_rule({ match = { title = "^(Library)(.*)$" }, float = true })
 
 -- Floaters
 hl.window_rule({ match = { initial_class = "^com.github.wwmm.easyeffects$" }, float = true, size = { 1400, 800 } })
+hl.window_rule({
+  match = { initial_title = "^Picture-in-Picture$" },
+  float = true,
+  size = { 1400, 800 },
+  suppress_event = "fullscreen maximize activate activatefocus fullscreenoutput x11configurerequest", -- stay in the TIMEOUT corner dammit
+})
 
 -- Tearing
 hl.window_rule({ match = { class = ".*\\.exe" }, immediate = true })
