@@ -12,6 +12,7 @@ import { translate } from "./providers/translate"
 import type { RunnerResult } from "./types"
 
 const PAGE_SIZE = 8
+const RESULT_MAX_WIDTH_CHARS = 54
 const [page, setPage] = createState<{ offset: number; results: RunnerResult[] }>({ offset: 0, results: [] })
 const visibleResults = page.as(page => page.results.slice(0, PAGE_SIZE))
 const [selected, setSelected] = createState(0)
@@ -169,12 +170,19 @@ export default function Runner() {
                     <box class="runner-result">
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
-                        <label class="title" label={result.title} xalign={0} truncate />
+                        <label
+                          class="title"
+                          label={result.title}
+                          xalign={0}
+                          truncate
+                          maxWidthChars={RESULT_MAX_WIDTH_CHARS}
+                        />
                         <label
                           class="description"
                           label={result.description ?? ""}
                           xalign={0}
                           truncate
+                          maxWidthChars={RESULT_MAX_WIDTH_CHARS}
                           visible={Boolean(result.description)}
                         />
                       </box>
