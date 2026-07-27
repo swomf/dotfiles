@@ -14,6 +14,7 @@ import type { Provider, RunnerResult } from "./types"
 
 const providers: Provider[] = [appProvider, rinkProvider, symbolProvider, translateProvider]
 const PAGE_SIZE = 8
+const RESULT_MAX_WIDTH_CHARS = 54
 const [results, setResults] = createState<RunnerResult[]>([])
 const [selected, setSelected] = createState(0)
 const [page, setPage] = createState(0)
@@ -227,12 +228,19 @@ export default function Runner() {
                     <box class="runner-result">
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
-                        <label class="title" label={result.title} xalign={0} truncate />
+                        <label
+                          class="title"
+                          label={result.title}
+                          xalign={0}
+                          truncate
+                          maxWidthChars={RESULT_MAX_WIDTH_CHARS}
+                        />
                         <label
                           class="description"
                           label={result.description ?? ""}
                           xalign={0}
                           truncate
+                          maxWidthChars={RESULT_MAX_WIDTH_CHARS}
                           visible={Boolean(result.description)}
                         />
                       </box>
