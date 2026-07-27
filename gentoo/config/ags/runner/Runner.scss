@@ -1,0 +1,98 @@
+@use "../theme";
+
+$surface: theme.$bg;
+$surface-raised: #0a0a0a;
+$divider: #2a2a2a;
+$text-primary: #f2f2f2;
+$text-secondary: #9a9a9a;
+$shell-radius: 14px;
+$input-radius: 13px;
+
+window.Runner {
+  all: unset;
+  background: transparent;
+  color: theme.$fg;
+
+  .runner-shell {
+    min-width: 640px;
+    margin: 36px 24px 0;
+    border: 1px solid theme.$fg;
+    border-radius: $shell-radius;
+    background: $surface;
+  }
+
+  .runner-input {
+    padding: 16px 18px;
+    border-bottom: 1px solid $divider;
+    border-radius: $input-radius $input-radius 0 0;
+    background: $surface-raised;
+
+    &.empty {
+      border-bottom-color: transparent;
+      border-radius: $input-radius;
+    }
+
+    icon {
+      min-width: 20px;
+      min-height: 20px;
+      margin-right: 14px;
+      color: theme.$fg;
+    }
+
+    entry {
+      all: unset;
+      min-height: 32px;
+      color: $text-primary;
+      font-family: theme.$font;
+      font-size: 20px;
+
+      selection {
+        color: $text-primary;
+      }
+    }
+  }
+
+  .runner-results {
+    padding: 8px;
+
+    button {
+      all: unset;
+      padding: 10px 12px 10px 9px;
+      border-left: 3px solid transparent;
+      border-radius: 0;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      &.selected {
+        background: transparent;
+        border-left-color: $text-primary;
+      }
+    }
+  }
+
+  .runner-result {
+    icon {
+      min-width: 44px;
+      min-height: 44px;
+      margin-right: 14px;
+      font-size: 32px;
+    }
+
+    label {
+      font-family: theme.$font;
+    }
+
+    .title {
+      color: $text-primary;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .description {
+      color: $text-secondary;
+      font-size: 13px;
+    }
+  }
+}

@@ -27,8 +27,6 @@ hl.bind("CTRL + ALT + T",        hl.dsp.exec_cmd('kitty --directory "$(~/.config
 hl.bind("SUPER + E",             hl.dsp.exec_cmd('nemo "$(~/.config/hypr/executable/hyprcwd)"'))
 hl.bind("SUPER + F",             hl.dsp.exec_cmd("firefox || firefox-bin"))
 hl.bind("CTRL + SHIFT + SUPER + P", hl.dsp.exec_cmd("firefox --private-window || firefox-bin --private-window"))
-hl.bind("SUPER + M",             hl.dsp.exec_cmd("anyrun --plugins /etc/anyrun/plugins/librink.so"))    -- measurement
-hl.bind("SUPER + U",             hl.dsp.exec_cmd("anyrun --plugins /etc/anyrun/plugins/libsymbols.so")) -- unicode
 hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("foot -T btop -- btop", {float = true, size = { 1400, 800 }}))
 
 -- Actions
@@ -42,7 +40,7 @@ hl.bind("SHIFT + SUPER + ALT + Q", hl.dsp.exec_cmd("hyprctl kill"))
 -- slurp picks the region, grim screenshots a geometry, swappy edits a picture
 hl.bind("Print",         hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'))
 hl.bind("CTRL + Print",  hl.dsp.exec_cmd('grim - | wl-copy && notify-send "Screenshot copied to clipboard" "grim - | wl-copy" --app-name="screenshot" -t 2000'))
-hl.bind("SUPER + V",     hl.dsp.exec_cmd("cliphist list | anyrun --show-results-immediately true --plugins libstdin.so | cliphist decode | wl-copy"))
+hl.bind("SUPER + V",     hl.dsp.exec_cmd("cliphist list | ~/.config/ags/runner/choose | cliphist decode | wl-copy"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/hypr/executable/post-hoc-screenshot"))
 
 -- Image-to-text
@@ -52,8 +50,8 @@ hl.bind("SUPER + SHIFT + T", hl.dsp.exec_cmd('grim -g "$(slurp)" - | tesseract s
 hl.bind("SUPER + L",        hl.dsp.exec_cmd("~/.config/hypr/executable/hyprlock"))
 hl.bind("CTRL + SUPER + L", hl.dsp.exec_cmd("hyprlock -c ~/.config/hypr/hyprlock-encrypted.conf"))
 
--- App launcher
-hl.bind("SUPER + R", hl.dsp.exec_cmd("anyrun"))
+-- launcher/translate/unit-aware calc/stdin/whatever
+hl.bind("SUPER + R", hl.dsp.exec_cmd("ags request runner"))
 
 -- ########################### misc Hyprland window/workspace binds ############################
 

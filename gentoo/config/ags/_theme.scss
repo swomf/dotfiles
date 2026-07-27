@@ -1,0 +1,14 @@
+@use "sass:string";
+
+$bg: #000000;
+$fg: #e0e0e0;
+$font: "Nimbus Sans";
+
+// GTK resolves these at runtime. Use alpha() rather than Sass color
+// functions when changing their opacity.
+$fg-theme: #{"@theme_fg_color"};
+$bg-theme: #{"@theme_bg_color"};
+
+@function alpha($color, $amount) {
+  @return string.unquote("alpha(#{$color},#{$amount})");
+}

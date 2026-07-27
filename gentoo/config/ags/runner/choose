@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+# but swomf, what about argmax?
+# broh thats 256mib, at that point just do a click and drag
+payload="$(base64 -w 0)"
+exec ags request -i "${AGS_INSTANCE:-ags}" runner-stdin "$payload"
