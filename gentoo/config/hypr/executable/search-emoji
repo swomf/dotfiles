@@ -1,0 +1,2 @@
+#!/usr/bin/env sh
+exec ags request -i "${AGS_INSTANCE:-ags}" runner emoji

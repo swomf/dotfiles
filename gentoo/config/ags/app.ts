@@ -11,7 +11,7 @@ app.start({
     // https://aylur.github.io/ags/guide/app-cli.html#messaging-from-cli
     const [command, base64input] = argv
     if (command === "runner") {
-      openRunner()
+      openRunner(base64input === "emoji" ? "emoji" : null)
       response("ok")
     } else if (command === "runner-stdin" && base64input) {
       try {

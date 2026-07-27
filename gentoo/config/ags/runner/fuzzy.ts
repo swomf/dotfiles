@@ -7,11 +7,11 @@ const boundary = /[\s_\-./]/
 // /
 
 // range is (-inf, inf) so consider -Infinity
-export function fuzzyScore(candidate: string, query: string): number | null {
+export function fuzzyScore(candidate: string, query: string, candidateIsLowercase = false): number | null {
   if (!query) return 0
 
   const caseSensitive = query !== query.toLowerCase()
-  const haystack = caseSensitive ? candidate : candidate.toLowerCase()
+  const haystack = caseSensitive || candidateIsLowercase ? candidate : candidate.toLowerCase()
   const needle = caseSensitive ? query : query.toLowerCase()
 
   let score = 0, pos = 0, prev = -2

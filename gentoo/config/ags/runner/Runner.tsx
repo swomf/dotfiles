@@ -4,6 +4,7 @@ import { execAsync } from "ags/process"
 import { createState, For } from "ags"
 import Gdk from "gi://Gdk?version=3.0"
 import Gtk from "gi://Gtk?version=3.0"
+import { searchEmoji } from "./providers/emoji"
 import { searchApps } from "./providers/apps"
 import { searchRink } from "./providers/rink"
 import { queryLines } from "./providers/stdin"
@@ -20,13 +21,14 @@ const [selected, setSelected] = createState(0)
 let entry: Gtk.Entry
 let generation = 0 // shitty way to not render old data
 type Chooser = { lines: string[]; respond: (value: string) => void }
-let chooser: Chooser | null = null
+type RunnerMode = Chooser | "emoji" | null
+let mode: RunnerMode = null
 
 function dismissRunner(value = "") {
   generation++
   app.get_window("runner")!.hide()
-  chooser?.respond(value)
-  chooser = null
+  if (mode && mode !== "emoji") mode.respond(value)
+  mode = null
 }
 
 async function updateRunner(input: string, target?: { offset: number; selected: number }) {
@@ -37,10 +39,12 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
 
   // the paging here is so that spammed unicode search doesnt obliterate our CPU
 
-  if (chooser) {
-    results = queryLines(chooser.lines, input, offset, limit)
+  if (mode && mode !== "emoji") {
+    results = queryLines(mode.lines, input, offset, limit)
   } else if (!input.trim()) {
     results = []
+  } else if (mode === "emoji") {
+    results = searchEmoji(input, offset, limit)
   } else {
     switch (input[0]) {
       case "=":
@@ -119,10 +123,11 @@ function handleKeyPress(keyval: number) {
   }
 }
 
-export function openRunner(next: Chooser | null = null) {
-  chooser?.respond("")
-  chooser = next
+export function openRunner(next: RunnerMode = null) {
+  if (mode && mode !== "emoji") mode.respond("")
+  mode = next
   const window = app.get_window("runner")!
+  entry.placeholder_text = next === "emoji" ? "Search emoji" : next ? "Search" : "Search applications"
   entry.text = ""
   updateRunner("")
   window.show()
@@ -156,7 +161,6 @@ export default function Runner() {
               <icon icon="system-search-symbolic" pixelSize={20} />
               <entry
                 hexpand
-                placeholderText="Search applications"
                 onChanged={self => updateRunner(self.text)}
                 $={self => entry = self}
               />
@@ -169,6 +173,7 @@ export default function Runner() {
                     onClicked={() => activateResult(index())}>
                     <box class="runner-result">
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
+                      {!result.icon && result.glyph && <label class="result-glyph" label={result.glyph} />}
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
                         <label
                           class="title"
