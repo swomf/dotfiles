@@ -11,8 +11,9 @@ import { searchSymbols } from "./providers/symbols"
 import { translate } from "./providers/translate"
 import type { RunnerResult } from "./types"
 
-const RESULT_LIMIT = 8
-const [results, setResults] = createState<RunnerResult[]>([])
+const PAGE_SIZE = 8
+const [page, setPage] = createState<{ offset: number; results: RunnerResult[] }>({ offset: 0, results: [] })
+const visibleResults = page.as(page => page.results.slice(0, PAGE_SIZE))
 const [selected, setSelected] = createState(0)
 
 let entry: Gtk.Entry
@@ -27,40 +28,46 @@ function dismissRunner(value = "") {
   chooser = null
 }
 
-function updateRunner(input: string) {
+async function updateRunner(input: string, target?: { offset: number; selected: number }) {
   const current = ++generation
-  setSelected(0)
+  const offset = target?.offset ?? 0
+  const limit = PAGE_SIZE + 1 // extra row means another page exists
+  let results: RunnerResult[]
+
+  // the paging here is so that spammed unicode search doesnt obliterate our CPU
+
   if (chooser) {
-    setResults(queryLines(chooser.lines, input))
-    return
-  }
-  if (!input.trim()) {
-    setResults([])
-    return
+    results = queryLines(chooser.lines, input, offset, limit)
+  } else if (!input.trim()) {
+    results = []
+  } else {
+    switch (input[0]) {
+      case "=":
+      case ":":
+        setPage({ offset, results: [] })
+        if (!target) {
+          await new Promise<void>(resolve => setTimeout(resolve, input[0] === "=" ? 80 : 300))
+          if (current !== generation) return
+        }
+        results = input[0] === "="
+          ? await searchRink(input.slice(1).trim())
+          : await translate(input.slice(1).trimStart(), offset, limit)
+        if (current !== generation) return
+        break
+      case ";":
+        results = searchSymbols(input.slice(1).trim(), offset, limit)
+        break
+      default:
+        results = searchApps(input, offset, limit)
+    }
   }
 
-  // we dont want instant response because it will just waste cpu
-  function searchButWithDelay(ms: number, search: () => Promise<RunnerResult[]>) {
-    setResults([])
-    setTimeout(() => {
-      if (current === generation) {
-        search().then(searchResults => {
-          if (current === generation) setResults(searchResults)
-        })
-      }
-    }, ms)
-  }
-
-  switch (input[0]) {
-    case "=": return searchButWithDelay(80, () => searchRink(input.slice(1).trim()))
-    case ":": return searchButWithDelay(300, () => translate(input.slice(1).trimStart(), RESULT_LIMIT))
-    case ";": return setResults(searchSymbols(input.slice(1).trim(), RESULT_LIMIT))
-    default: return setResults(searchApps(input, RESULT_LIMIT))
-  }
+  setSelected(Math.min(target?.selected ?? 0, Math.max(0, results.length - 1)))
+  setPage({ offset, results })
 }
 
 function activateResult(index = selected()) {
-  const result = results()[index]
+  const result = visibleResults()[index]
   if (!result) return
 
   switch (result.action.kind) {
@@ -78,10 +85,17 @@ function activateResult(index = selected()) {
   }
 }
 
-// [index, index + length)
 function moveSelection(amount: number) {
-  const length = results().length
-  if (length) setSelected(index => (index + amount + length) % length)
+  const { offset, results } = page()
+  if (!results.length) return
+  const next = selected() + amount
+  if (next >= 0 && next < Math.min(results.length, PAGE_SIZE)) {
+    setSelected(next)
+  } else if (next === PAGE_SIZE && results.length > PAGE_SIZE) {
+    updateRunner(entry.text, { offset: offset + PAGE_SIZE, selected: 0 })
+  } else if (next < 0 && offset > 0) {
+    updateRunner(entry.text, { offset: offset - PAGE_SIZE, selected: PAGE_SIZE - 1 })
+  }
 }
 
 function handleKeyPress(keyval: number) {
@@ -129,7 +143,7 @@ export default function Runner() {
       anchor={Astal.WindowAnchor.TOP}
       onKeyPressEvent={(_, event) => handleKeyPress(event.get_keyval()[1]) /* yes it does*/}>
       <box class="runner-shell" vertical>
-        <box class={results.as(items => items.length > 0 ? "runner-input" : "runner-input empty")}>
+        <box class={visibleResults.as(items => items.length > 0 ? "runner-input" : "runner-input empty")}>
           <icon icon="system-search-symbolic" pixelSize={20} />
           <entry
             hexpand
@@ -138,8 +152,8 @@ export default function Runner() {
             $={self => entry = self}
           />
         </box>
-        <box class="runner-results" vertical visible={results.as(items => items.length > 0)}>
-          <For each={results}>
+        <box class="runner-results" vertical visible={visibleResults.as(items => items.length > 0)}>
+          <For each={visibleResults}>
             {(result, index) => (
               <button
                 class={selected.as(current => current === index() ? "selected" : "")}

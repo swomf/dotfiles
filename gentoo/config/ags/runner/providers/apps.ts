@@ -4,8 +4,8 @@ import type { RunnerResult } from "../types"
 const apps = new AstalApps.Apps()
 
 // anyrun-org app launcher
-export function searchApps(input: string, limit: number): RunnerResult[] {
-  return apps.fuzzy_query(input).slice(0, limit).map(application => ({
+export function searchApps(input: string, offset: number, limit: number): RunnerResult[] {
+  return apps.fuzzy_query(input).slice(offset, offset + limit).map(application => ({
     title: application.name,
     description: application.description || application.executable,
     icon: application.iconName || "application-x-executable",

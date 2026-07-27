@@ -56,7 +56,7 @@ function findLangMatches(query: string) {
     .slice(0, 3)
 }
 
-export async function translate(input: string, limit: number): Promise<RunnerResult[]> {
+export async function translate(input: string, offset: number, limit: number): Promise<RunnerResult[]> {
   const match = input.match(/^(\S+)\s+(.+)$/)
   if (!match) return []
   const [, languageSpec, text] = match
@@ -72,7 +72,7 @@ export async function translate(input: string, limit: number): Promise<RunnerRes
 
   const pairs = sources
     .flatMap(source => destinations.map(destination => ({ source, destination })))
-    .slice(0, limit)
+    .slice(offset, offset + limit)
 
   const results = await Promise.all(pairs.map(async ({ source, destination }) => {
     try {

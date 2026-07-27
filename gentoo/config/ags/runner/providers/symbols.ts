@@ -64,14 +64,14 @@ function loadSymbols(): SymbolEntry[] {
     })
 }
 
-export function searchSymbols(query: string, limit: number): RunnerResult[] {
+export function searchSymbols(query: string, offset: number, limit: number): RunnerResult[] {
   if (!query) return []
 
   return (symbols ??= loadSymbols()) // massive, use only if needed
     .map((symbol, index) => ({ symbol, index, score: fuzzyScore(symbol.name, query) }))
     .filter((match): match is typeof match & { score: number } => match.score !== null)
     .sort((a, b) => b.score - a.score || a.index - b.index)
-    .slice(0, limit)
+    .slice(offset, offset + limit)
     .map(({ symbol }) => ({
       title: symbol.char,
       description: symbol.name,
