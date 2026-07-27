@@ -3,6 +3,7 @@ require("wm.keybinds.pocket-femtanyl")
 require("wm.keybinds.spin-monitor")
 require("wm.keybinds.floating-windows")
 require("wm.keybinds.goto-app")
+require("wm.keybinds.fullscreen")
 
 -- stylua: ignore start
 
@@ -62,36 +63,6 @@ hl.bind("SUPER + semicolon",  hl.dsp.layout("splitratio -0.1"), { repeating = tr
 hl.bind("SUPER + apostrophe", hl.dsp.layout("splitratio 0.1"),  { repeating = true })
 
 -- stylua: ignore end
-
--- Fullscreen
---[[
-    -1	Current    	Maintains the current fullscreen state.
-     0	None	      Window allocates the space defined by the current layout.
-     1	Maximized	  Window takes up the entire working space, keeping the margins.
-     2	Fullscreen  Window takes up the entire screen.
-     internal is hyprland
-]]
-local function toggle_fullscreenstate(client_type, num)
-  -- weirdly, hyprctl activewindow uses
-  -- fullscreen and fullscreen_client (not fullscreenClient??) instead of
-  -- internal and client
-  -- :wilting_rose:
-  local hyprctl_activewindow_key = client_type == "internal" and "fullscreen" or "fullscreen_client" -- i.e. "client"
-  local dsp_arg = { internal = -1, client = -1 }
-  local win = hl.get_active_window()
-  if not win then
-    return
-  end
-  dsp_arg[client_type] = win[hyprctl_activewindow_key] == 0 and num or 0
-  hl.dispatch(hl.dsp.window.fullscreen_state(dsp_arg))
-end
-hl.bind("F11", hl.dsp.window.fullscreen({ mode = "fullscreen" }))
-hl.bind("SHIFT + F11", function()
-  toggle_fullscreenstate("internal", 1)
-end)
-hl.bind("SUPER + F11", function()
-  toggle_fullscreenstate("client", 2)
-end)
 
 -- Alt+Tab window cycling
 hl.bind("ALT + Tab", function()
