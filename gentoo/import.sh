@@ -13,7 +13,6 @@ home_dots=(
   ".config/hypr"
   ".config/foot"
   ".config/kitty"
-  ".config/anyrun"
   ".config/swappy"
   ".config/nnn"
   ".config/nvim/lua"
