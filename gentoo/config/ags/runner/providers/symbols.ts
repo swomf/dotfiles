@@ -76,14 +76,14 @@ export const symbolProvider: Provider = {
   matchInput(input) {
     return input.startsWith(";") ? input.slice(1).trim() : null
   },
-  query(query, limit) {
+  query(query, limit, offset = 0) {
     if (!query) return []
 
     return (symbols ??= loadSymbols()) // massive, use only if needed
       .map((symbol, index) => ({ symbol, index, score: fuzzyScore(symbol.name, query) }))
       .filter((match): match is typeof match & { score: number } => match.score !== null)
       .sort((a, b) => b.score - a.score || a.index - b.index)
-      .slice(0, limit)
+      .slice(offset, offset + limit)
       .map(({ symbol, index }) => ({
         title: symbol.char,
         description: symbol.name,

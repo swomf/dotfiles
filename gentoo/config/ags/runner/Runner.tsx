@@ -13,15 +13,18 @@ import { translateProvider } from "./providers/translate"
 import type { Provider, RunnerResult } from "./types"
 
 const providers: Provider[] = [appProvider, rinkProvider, symbolProvider, translateProvider]
-const RESULT_LIMIT = 8
+const PAGE_SIZE = 8
 const [results, setResults] = createState<RunnerResult[]>([])
 const [selected, setSelected] = createState(0)
+const [page, setPage] = createState(0)
+const [hasNextPage, setHasNextPage] = createState(false)
 const [prompt] = createState("Search applications")
 
 let entry: Gtk.Entry
 let generation = 0
 let stdinLines: string[] | null = null
 let stdinResponse: ((value: string) => void) | null = null
+let pageQuery: ((limit: number, offset: number) => RunnerResult[] | Promise<RunnerResult[]>) | null = null
 
 function dismissRunner(value = "") {
   generation++
@@ -39,8 +42,14 @@ function dismissRunner(value = "") {
 async function update(input: string) {
   const current = ++generation
   setSelected(0)
+  setPage(0)
+  setHasNextPage(false)
+  pageQuery = null
+
   if (stdinLines) {
-    setResults(queryLines(stdinLines, input))
+    const lines = stdinLines
+    pageQuery = (limit, offset) => queryLines(lines, input, limit, offset)
+    await publishPage(current, 0, 0)
     return
   }
   // dont rank if textbox input empty
@@ -68,9 +77,29 @@ async function update(input: string) {
   ))
   if (current !== generation) return
 
-  const next = await active.provider.query(active.query, RESULT_LIMIT)
-  if (current === generation)
-    setResults(next)
+  pageQuery = (limit, offset) => active.provider.query(active.query, limit, offset)
+  await publishPage(current, 0, 0)
+}
+
+async function publishPage(current: number, nextPage: number, nextSelection: number) {
+  const query = pageQuery
+  if (!query) return
+
+  // the extra result tells us whether another page exists without rendering it
+  const next = await query(PAGE_SIZE + 1, nextPage * PAGE_SIZE)
+  if (current !== generation) return
+
+  const visible = next.slice(0, PAGE_SIZE)
+  setResults(visible)
+  setPage(nextPage)
+  setHasNextPage(next.length > PAGE_SIZE)
+  setSelected(Math.min(nextSelection, Math.max(visible.length - 1, 0)))
+}
+
+async function loadPage(nextPage: number, nextSelection: number) {
+  if (!pageQuery) return
+  const current = ++generation
+  await publishPage(current, nextPage, nextSelection)
 }
 
 async function activateResult(index = selected()) {
@@ -98,7 +127,16 @@ async function activateResult(index = selected()) {
 
 function moveSelection(amount: number) {
   const length = results().length
-  if (length) setSelected(index => (index + amount + length) % length)
+  if (!length) return
+
+  const next = selected() + amount
+  if (next >= 0 && next < length) {
+    setSelected(next)
+  } else if (next >= length && hasNextPage()) {
+    void loadPage(page() + 1, 0)
+  } else if (next < 0 && page() > 0) {
+    void loadPage(page() - 1, PAGE_SIZE - 1)
+  }
 }
 
 function handleKeyPress(keyval: number) {

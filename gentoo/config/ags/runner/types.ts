@@ -17,5 +17,6 @@ export type Provider = {
   debounceMs?: number
   /** Returns the provider query, or null when this provider is inactive. */
   matchInput: (input: string) => string | null
-  query: (input: string, limit: number) => RunnerResult[] | Promise<RunnerResult[]>
+  /** Returns up to `limit` ranked results, starting at `offset`. */
+  query: (input: string, limit: number, offset?: number) => RunnerResult[] | Promise<RunnerResult[]>
 }

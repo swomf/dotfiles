@@ -4,6 +4,8 @@ import type { RunnerResult } from "../types"
 export function queryLines(
   lines: string[],
   input: string,
+  limit: number,
+  offset = 0,
 ): RunnerResult[] {
   // dont rank if no user input (e.g. fresh cliphist feeding)
   const matches = input
@@ -14,7 +16,7 @@ export function queryLines(
     : lines.map((line, index) => ({ line, index }))
 
   return matches
-    .slice(0, 8)
+    .slice(offset, offset + limit)
     .map(({ line }): RunnerResult => ({
       title: line,
       action: { kind: "return", text: line },

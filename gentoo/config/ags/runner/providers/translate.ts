@@ -61,7 +61,7 @@ export const translateProvider: Provider = {
   matchInput(input) {
     return input.startsWith(":") ? input.slice(1).trimStart() : null
   },
-  async query(input, limit) {
+  async query(input, limit, offset = 0) {
     const match = input.match(/^(\S+)\s+(.+)$/)
     if (!match) return []
     const [, languageSpec, text] = match
@@ -77,7 +77,7 @@ export const translateProvider: Provider = {
 
     const pairs = sources
       .flatMap(source => destinations.map(destination => ({ source, destination })))
-      .slice(0, limit)
+      .slice(offset, offset + limit)
 
     const results = await Promise.all(pairs.map(async ({ source, destination }) => {
       try {

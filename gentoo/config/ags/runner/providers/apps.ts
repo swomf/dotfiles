@@ -8,8 +8,8 @@ export const appProvider: Provider = {
   matchInput(input) {
     return /^[=:;]/.test(input) ? null : input
   },
-  query(input, limit) {
-    return apps.fuzzy_query(input || null).slice(0, limit).map(application => ({
+  query(input, limit, offset = 0) {
+    return apps.fuzzy_query(input || null).slice(offset, offset + limit).map(application => ({
       title: application.name,
       description: application.description || application.executable,
       icon: application.iconName || "application-x-executable",
