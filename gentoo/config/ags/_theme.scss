@@ -2,7 +2,7 @@
 
 $bg: #000000;
 $fg: #e0e0e0;
-$font: "Nimbus Sans";
+$font: "Nimbus Sans", "Noto Sans", "Noto Sans Symbols 2", "Noto Sans Symbols", "Noto Color Emoji", sans-serif;
 
 // GTK resolves these at runtime. Use alpha() rather than Sass color
 // functions when changing their opacity.

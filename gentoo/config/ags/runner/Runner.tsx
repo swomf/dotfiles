@@ -5,6 +5,7 @@ import { createState, For } from "ags"
 import GLib from "gi://GLib?version=2.0"
 import Gdk from "gi://Gdk?version=3.0"
 import Gtk from "gi://Gtk?version=3.0"
+import PangoCairo from "gi://PangoCairo?version=1.0"
 import { appProvider } from "./providers/apps"
 import { emojiProvider } from "./providers/emoji"
 import { rinkProvider } from "./providers/rink"
@@ -165,6 +166,35 @@ function handleKeyPress(keyval: number) {
   }
 }
 
+// gtk doesnt really have max-size so i do raw pango and pre allocate
+// a drawing area. THATS your size.
+// helps with drawing unicode cuneiform stuff for example.
+function drawGlyph(glyph: string) {
+  return (area: Gtk.DrawingArea, cr: any) => {
+    // NOTE: we dont keep track of state via save() and restore()
+    // since there is simply no state transition to do.
+    const context = area.get_style_context() // follow theme css
+    const layout = area.create_pango_layout(glyph)
+
+    // coloring stuff; fg black otherwise
+    const color = context.get_color(Gtk.StateFlags.NORMAL)
+    cr.setSourceRGBA(color.red, color.green, color.blue, color.alpha)
+
+    // for centering. center by the "area with ink" not the "logical area"
+    const [ink] = layout.get_pixel_extents()
+    if (!ink) return true // return true means "its handled"; shouldnt be possible since it would just be 0x0
+    const allocation = area.get_allocation()
+    cr.moveTo(
+      (allocation.width - ink.width) / 2 - ink.x,
+      (allocation.height - ink.height) / 2 - ink.y,
+    )
+
+    PangoCairo.show_layout(cr, layout)
+
+    return true
+  }
+}
+
 // bit of copypaste.
 // is Runner.tsx too aware of providers?
 export function openRunner() {
@@ -251,9 +281,13 @@ export default function Runner() {
                     onClicked={() => activateResult(index())}>
                     <box class="runner-result">
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
-                      {!result.icon && result.glyph && <label
-                        class="result-glyph"
-                        label={result.glyph}
+                      {!result.icon && result.glyph && <drawingarea
+                        class="result-glyph-slot"
+                        widthRequest={44}
+                        heightRequest={44}
+                        halign={Gtk.Align.CENTER}
+                        valign={Gtk.Align.CENTER}
+                        onDraw={drawGlyph(result.glyph)}
                       />}
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
                         <label
