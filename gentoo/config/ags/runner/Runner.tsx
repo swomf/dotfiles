@@ -7,6 +7,7 @@ import Gtk from "gi://Gtk?version=3.0"
 import PangoCairo from "gi://PangoCairo?version=1.0"
 import { searchEmoji } from "./providers/emoji"
 import { searchApps } from "./providers/apps"
+import { searchDictionary } from "./providers/dictionary"
 import { searchRink } from "./providers/rink"
 import { queryLines } from "./providers/stdin"
 import { searchSymbols } from "./providers/symbols"
@@ -63,9 +64,9 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
           await new Promise<void>(resolve => setTimeout(resolve, input[0] === "=" ? 80 : 300))
           if (current !== generation) return
         }
-        results = input[0] === "="
-          ? await searchRink(input.slice(1).trim())
-          : await translate(input.slice(1).trimStart(), offset, limit)
+        if (input[0] === "=") results = await searchRink(input.slice(1).trim())
+        else if (input.startsWith(":def")) results = await searchDictionary(input.slice(4).trim(), offset, limit)
+        else results = await translate(input.slice(1).trimStart(), offset, limit)
         if (current !== generation) return
         break
       default:

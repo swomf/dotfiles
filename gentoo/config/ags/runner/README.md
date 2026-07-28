@@ -9,6 +9,7 @@ ags request runner
 - `;greek small alpha` = unicode search
 - `:fr hello world` = auto-detect and translate to French
 - `:en>ja hello world` = translate from English to Japanese
+- `:def word` = dictionaryapi.dev lookup
 - no prefix exists for emoji instead we use `ags request runner emoji` = emoji search
   - initialize with `./providers/emojidata/update-emoji-data.py` and `./providers/emojidata/update-twemoji.sh`
   - consider editing `providers/emojidata/emoji-overrides`
