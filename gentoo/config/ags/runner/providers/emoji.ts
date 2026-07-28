@@ -1,5 +1,5 @@
 import GLib from "gi://GLib?version=2.0"
-import { fuzzyScore } from "../fuzzy"
+import { fuzzyScore, topMatches } from "../fuzzy"
 import type { Provider } from "../types"
 
 type EmojiEntry = { value: string; terms: string }
@@ -97,24 +97,11 @@ export const emojiProvider: Provider = {
   query(query, limit, offset = 0) {
     if (!query) return []
 
-    const best: { entry: EmojiEntry; index: number; score: number }[] = []
-    const needed = offset + limit
-
-    for (const [index, entry] of (emojis ??= loadEmojis()).entries()) {
-      const score = fuzzyScore(entry.terms, query, true)
-      if (score === null) continue
-
-      const position = best.findIndex(result =>
-        score > result.score || (score === result.score && index < result.index))
-      if (position < 0) {
-        if (best.length < needed) best.push({ entry, index, score })
-      } else {
-        best.splice(position, 0, { entry, index, score })
-        if (best.length > needed) best.pop()
-      }
-    }
-
-    return best.slice(offset).map(({ entry }) => ({
+    return topMatches(
+      emojis ??= loadEmojis(),
+      entry => fuzzyScore(entry.terms, query, true),
+      offset + limit,
+    ).slice(offset).map(({ entry }) => ({
       title: entry.terms,
       icon: findEmojiSvgPath(entry.value),
       glyph: entry.value,

@@ -1,9 +1,23 @@
 import GLib from "gi://GLib?version=2.0"
-import { fuzzyScore } from "../fuzzy"
+import { fuzzyScore, topMatches } from "../fuzzy"
 import type { Provider } from "../types"
 
-type SymbolEntry = { char: string; name: string }
-let symbols: SymbolEntry[] | null = null
+type SymbolData = {
+  codepoints: Uint32Array
+  names: string[]
+  namesLower: string[]
+  nameMasks: Uint32Array
+}
+let symbols: SymbolData | null = null
+
+function characterMask(text: string): number {
+  let mask = 0
+  for (let index = 0; index < text.length; index++) {
+    const codepoint = text.charCodeAt(index) - 97
+    if (codepoint >= 0 && codepoint < 26) mask |= 1 << codepoint
+  }
+  return mask
+}
 
 /* anyrun-org uses UnicodeData.txt but I don't want to vendor/maintain that
  * in my dotfiles so I looked for it in disk.
@@ -35,7 +49,7 @@ let symbols: SymbolEntry[] | null = null
  *
  **/
 
-function loadSymbols(): SymbolEntry[] {
+function loadSymbols(): SymbolData {
   try {
     // https://github.com/anyrun-org/anyrun/blob/master/plugins/symbols/build.rs
     // one important difference from upstream is that we arent vendoring this
@@ -44,51 +58,60 @@ function loadSymbols(): SymbolEntry[] {
     //
     // i wonder why they dont just depend on unicode-data :thonk: maybe its dirtier?
     const [ok, bytes] = GLib.file_get_contents("/usr/share/unicode-data/UnicodeData.txt")
-    if (!ok) return []
+    if (!ok) return { codepoints: new Uint32Array(), names: [], namesLower: [], nameMasks: new Uint32Array() }
 
-    return new TextDecoder()
-      .decode(bytes)
-      .split(/\n/) // \r? isnt needed; idk if it goes faster w/o.
-      .flatMap(line => {
-        const [hex, name] = line.split(";")
+    const codepoints: number[] = []
+    const names: string[] = []
+    const namesLower: string[] = []
+    const nameMasks: number[] = []
+    for (const line of new TextDecoder().decode(bytes).split(/\n/)) { // \r? isnt needed; idk if it goes faster w/o.
+      const [hex, name] = line.split(";")
 
-        // https://github.com/anyrun-org/anyrun/blob/f3b23bc5520f7673a5119da44b3570fbe060db37/plugins/symbols/build.rs#L16
-        // most <control> isnt visible on its own anyway so we keep that
-        if (!hex || !name || name === "<control>") return []
+      // https://github.com/anyrun-org/anyrun/blob/f3b23bc5520f7673a5119da44b3570fbe060db37/plugins/symbols/build.rs#L16
+      // most <control> isnt visible on its own anyway so we keep that
+      if (!hex || !name || name === "<control>") continue
 
-        const codepoint = Number.parseInt(hex, 16)
+      const codepoint = Number.parseInt(hex, 16)
 
-        // upstream does a from u32 check but i dont think we need it.
-        if (codepoint >= 0xd800 && codepoint <= 0xdfff)
-          return []
+      // upstream does a from u32 check but i dont think we need it.
+      if (codepoint >= 0xd800 && codepoint <= 0xdfff) continue
 
-        return [{
-          char: String.fromCodePoint(codepoint),
-          name,
-        }]
-      })
+      const nameLower = name.toLowerCase()
+      codepoints.push(codepoint)
+      names.push(name)
+      namesLower.push(nameLower)
+      nameMasks.push(characterMask(nameLower))
+    }
+    return { codepoints: Uint32Array.from(codepoints), names, namesLower, nameMasks: Uint32Array.from(nameMasks) }
   } catch { }
   console.error("runner: UnicodeData.txt was not found; symbols are unavailable")
-  return []
+  return { codepoints: new Uint32Array(), names: [], namesLower: [], nameMasks: new Uint32Array() }
 }
 
 export const symbolProvider: Provider = {
+  debounceMs: 60,
   matchInput(input) {
     return input.startsWith(";") ? input.slice(1).trim() : null
   },
   query(query, limit, offset = 0) {
     if (!query) return []
 
-    return (symbols ??= loadSymbols()) // massive, use only if needed
-      .map((symbol, index) => ({ symbol, index, score: fuzzyScore(symbol.name, query) }))
-      .filter((match): match is typeof match & { score: number } => match.score !== null)
-      .sort((a, b) => b.score - a.score || a.index - b.index)
+    const queryMask = characterMask(query.toLowerCase())
+    const entries = symbols ??= loadSymbols() // massive, use only if needed
+    return topMatches(
+      entries.namesLower,
+      (nameLower, index) => {
+        if ((entries.nameMasks[index] & queryMask) !== queryMask) return null
+        return fuzzyScore(nameLower, query, true)
+      },
+      offset + limit,
+    )
       .slice(offset, offset + limit)
-      .map(({ symbol, index }) => ({
-        title: symbol.char,
-        description: symbol.name,
+      .map(({ index }) => ({
+        title: String.fromCodePoint(entries.codepoints[index]),
+        description: entries.names[index],
         icon: "accessories-character-map",
-        action: { kind: "copy", text: symbol.char },
+        action: { kind: "copy", text: String.fromCodePoint(entries.codepoints[index]) },
       }))
   },
 }

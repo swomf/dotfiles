@@ -31,8 +31,6 @@ hl.bind("CTRL + SHIFT + SUPER + P", hl.dsp.exec_cmd("firefox --private-window ||
 hl.bind("CTRL + SHIFT + Escape", hl.dsp.exec_cmd("foot -T btop -- btop", {float = true, size = { 1400, 800 }}))
 
 -- Actions
--- see ~/.config/ags/runner/providers/emojidata/update-emoji-data
-hl.bind("SUPER + period", hl.dsp.exec_cmd("~/.config/hypr/executable/search-emoji"))
 hl.bind("SUPER + comma",  hl.dsp.exec_cmd("pkill fuzzel || ~/git/fuzzel-math/fuzzel-math"))
 hl.bind("SUPER + Q",      hl.dsp.window.close())
 hl.bind("ALT + F4",       hl.dsp.window.close())
@@ -51,8 +49,11 @@ hl.bind("SUPER + SHIFT + T", hl.dsp.exec_cmd('grim -g "$(slurp)" - | tesseract s
 hl.bind("SUPER + L",        hl.dsp.exec_cmd("~/.config/hypr/executable/hyprlock"))
 hl.bind("CTRL + SUPER + L", hl.dsp.exec_cmd("hyprlock -c ~/.config/hypr/hyprlock-encrypted.conf"))
 
--- launcher/translate/unit-aware calc/stdin/whatever
+-- ags stuff
+-- see ~/.config/ags/runner/providers/emojidata/update-emoji-data
 hl.bind("SUPER + R", hl.dsp.exec_cmd("ags request runner"))
+hl.bind("SUPER + period", hl.dsp.exec_cmd("ags request runner emoji"))
+hl.bind("SUPER + U", hl.dsp.exec_cmd("ags request runner unicode"))
 
 -- ########################### misc Hyprland window/workspace binds ############################
 

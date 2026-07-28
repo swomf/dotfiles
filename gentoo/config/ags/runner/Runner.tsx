@@ -165,6 +165,8 @@ function handleKeyPress(keyval: number) {
   }
 }
 
+// bit of copypaste.
+// is Runner.tsx too aware of providers?
 export function openRunner() {
   stdinLines = null
   stdinResponse = null
@@ -177,6 +179,13 @@ export function openEmojiRunner() {
   stdinResponse = null
   forcedProvider = emojiProvider
   presentRunner("Search emoji")
+}
+
+export function openSymbolRunner() {
+  stdinLines = null
+  stdinResponse = null
+  forcedProvider = symbolProvider
+  presentRunner("Search Unicode symbols")
 }
 
 export function openStdin(lines: string[], response: (value: string) => void) {

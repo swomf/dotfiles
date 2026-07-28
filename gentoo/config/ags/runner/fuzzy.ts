@@ -34,3 +34,32 @@ export function fuzzyScore(candidate: string, query: string, candidateIsLowercas
 
   return score - candidate.length * 0.1 // debuff massive strings but not too much
 }
+
+export type ScoredMatch<T> = { entry: T; index: number; score: number }
+
+export function topMatches<T>(
+  entries: Iterable<T>,
+  scoreEntry: (entry: T, index: number) => number | null,
+  needed: number,
+): ScoredMatch<T>[] {
+  const best: ScoredMatch<T>[] = []
+  if (needed <= 0) return best
+
+  let index = 0
+  for (const entry of entries) {
+    const score = scoreEntry(entry, index)
+    if (score !== null) {
+      const position = best.findIndex(result =>
+        score > result.score || (score === result.score && index < result.index))
+      if (position < 0) {
+        if (best.length < needed) best.push({ entry, index, score })
+      } else {
+        best.splice(position, 0, { entry, index, score })
+        if (best.length > needed) best.pop()
+      }
+    }
+    index++
+  }
+
+  return best
+}

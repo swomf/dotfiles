@@ -3,7 +3,7 @@ import GLib from "gi://GLib?version=2.0"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
 import NotificationPopups from "./notifications/NotificationPopups"
-import Runner, { openEmojiRunner, openRunner, openStdin } from "./runner/Runner"
+import Runner, { openEmojiRunner, openRunner, openStdin, openSymbolRunner } from "./runner/Runner"
 
 app.start({
   css: style,
@@ -12,6 +12,7 @@ app.start({
     const [command, payload] = argv
     if (command === "runner") {
       if (payload === "emoji") openEmojiRunner()
+      else if (payload === "unicode" || payload === "symbols") openSymbolRunner()
       else openRunner()
       response("ok")
     } else if (command === "runner-stdin" && payload) {
