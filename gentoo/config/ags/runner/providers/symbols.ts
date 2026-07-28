@@ -1,8 +1,8 @@
 import GLib from "gi://GLib?version=2.0"
-import { fuzzyScore } from "../fuzzy"
+import { fuzzyScore, topKScorers } from "../fuzzy"
 import type { RunnerResult } from "../types"
 
-type SymbolEntry = { char: string; name: string }
+type SymbolEntry = { char: string; name: string; lower: string; mask: number }
 let symbols: SymbolEntry[] | null = null
 
 /* anyrun-org uses UnicodeData.txt but I don't want to vendor/maintain that
@@ -35,47 +35,58 @@ let symbols: SymbolEntry[] | null = null
  *
  **/
 
+function letterMask(text: string): number {
+  // basically, if we have something like "arrow", it hits the bits for a,o,r,w.
+  // - it doesnt reject anything fuzzyScore wouldnt reject
+  // - it saves cpu on massive bullshit namely the unicode search
+  //   (a lot is geared around fighting this)
+  let mask = 0
+  for (let index = 0; index < text.length; index++) {
+    const codepoint = text.charCodeAt(index) - 97
+    if (codepoint >= 0 && codepoint < 26) mask |= 1 << codepoint
+  }
+  return mask
+}
+
 function loadSymbols(): SymbolEntry[] {
   // https://gnome.pages.gitlab.gnome.org/glibmm/group__FileUtils.html
   const unicodeData = "/usr/share/unicode-data/UnicodeData.txt"
   if (!GLib.file_test(unicodeData, GLib.FileTest.EXISTS)) return []
   const [, bytes] = GLib.file_get_contents(unicodeData)
 
-  return new TextDecoder()
-    .decode(bytes)
-    .split(/\n/) // \r? in the anyrun-org version isnt needed; idk if it goes faster w/o.
-    .flatMap(line => {
-      const [hex, name] = line.split(";")
+  const entries: SymbolEntry[] = []
+  for (const line of new TextDecoder().decode(bytes).split(/\n/)) { // \r? isnt needed; idk if it goes faster w/o.
+    const [hex, name] = line.split(";")
 
-      // https://github.com/anyrun-org/anyrun/blob/f3b23bc5520f7673a5119da44b3570fbe060db37/plugins/symbols/build.rs#L16
-      // most <control> isnt visible on its own anyway so we keep that
-      if (!hex || !name || name === "<control>") return []
+    // https://github.com/anyrun-org/anyrun/blob/f3b23bc5520f7673a5119da44b3570fbe060db37/plugins/symbols/build.rs#L16
+    // most <control> isnt visible on its own anyway so we keep that
+    if (!hex || !name || name === "<control>") continue
 
-      const codepoint = Number.parseInt(hex, 16)
+    const codepoint = Number.parseInt(hex, 16)
 
-      // upstream does a from u32 check but i dont think we need it.
-      if (codepoint >= 0xd800 && codepoint <= 0xdfff)
-        return []
+    // upstream does a from u32 check but i dont think we need it.
+    if (codepoint >= 0xd800 && codepoint <= 0xdfff) continue
 
-      return [{
-        char: String.fromCodePoint(codepoint),
-        name,
-      }]
-    })
+    const lower = name.toLowerCase()
+    entries.push({ char: String.fromCodePoint(codepoint), name, lower, mask: letterMask(lower) })
+  }
+  return entries
 }
 
 export function searchSymbols(query: string, offset: number, limit: number): RunnerResult[] {
   if (!query) return []
 
-  return (symbols ??= loadSymbols()) // massive, use only if needed
-    .map((symbol, index) => ({ symbol, index, score: fuzzyScore(symbol.name, query) }))
-    .filter((match): match is typeof match & { score: number } => match.score !== null)
-    .sort((a, b) => b.score - a.score || a.index - b.index)
-    .slice(offset, offset + limit)
-    .map(({ symbol }) => ({
-      title: symbol.char,
-      description: symbol.name,
-      icon: "accessories-character-map",
-      action: { kind: "copy", text: symbol.char },
-    }))
+  const entries = symbols ??= loadSymbols() // massive, use only if needed
+  const lower = query.toLowerCase()
+  const mask = letterMask(lower)
+  const caseSensitive = query !== lower
+  return topKScorers(entries, entry => {
+    if ((entry.mask & mask) !== mask) return null
+    return fuzzyScore(caseSensitive ? entry.name : entry.lower, query, true)
+  }, offset + limit).slice(offset).map(({ entry }) => ({
+    title: entry.char,
+    description: entry.name,
+    icon: "accessories-character-map",
+    action: { kind: "copy", text: entry.char },
+  }))
 }

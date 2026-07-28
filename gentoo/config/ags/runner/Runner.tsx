@@ -20,14 +20,14 @@ const [selected, setSelected] = createState(0)
 
 let entry: Gtk.Entry
 let generation = 0 // shitty way to not render old data
-type Chooser = { lines: string[]; respond: (value: string) => void }
-type RunnerMode = Chooser | "emoji" | null
+type Chooser = { lines: string[]; respond: (value: string) => void } // typeof Chooser is object
+type RunnerMode = Chooser | "emoji" | "symbols" | null
 let mode: RunnerMode = null
 
 function dismissRunner(value = "") {
   generation++
   app.get_window("runner")!.hide()
-  if (mode && mode !== "emoji") mode.respond(value)
+  if (mode && typeof mode === "object") mode.respond(value)
   mode = null
 }
 
@@ -39,12 +39,20 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
 
   // the paging here is so that spammed unicode search doesnt obliterate our CPU
 
-  if (mode && mode !== "emoji") {
+  if (mode && typeof mode === "object") {
+    // its from choose so its typeof is object
     results = queryLines(mode.lines, input, offset, limit)
   } else if (!input.trim()) {
     results = []
   } else if (mode === "emoji") {
     results = searchEmoji(input, offset, limit)
+  } else if (mode === "symbols" || input.startsWith(";")) {
+    setPage({ offset, results: [] })
+    if (!target) {
+      await new Promise<void>(resolve => setTimeout(resolve, 60))
+      if (current !== generation) return
+    }
+    results = searchSymbols(mode === "symbols" ? input : input.slice(1).trim(), offset, limit)
   } else {
     switch (input[0]) {
       case "=":
@@ -58,9 +66,6 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
           ? await searchRink(input.slice(1).trim())
           : await translate(input.slice(1).trimStart(), offset, limit)
         if (current !== generation) return
-        break
-      case ";":
-        results = searchSymbols(input.slice(1).trim(), offset, limit)
         break
       default:
         results = searchApps(input, offset, limit)
@@ -124,10 +129,11 @@ function handleKeyPress(keyval: number) {
 }
 
 export function openRunner(next: RunnerMode = null) {
-  if (mode && mode !== "emoji") mode.respond("")
+  if (mode && typeof mode === "object") mode.respond("")
   mode = next
   const window = app.get_window("runner")!
-  entry.placeholder_text = next === "emoji" ? "Search emoji" : next ? "Search" : "Search applications"
+  entry.placeholder_text = next === "emoji" ? "Search emoji" :
+    next === "symbols" ? "Search Unicode symbols" : next ? "Search" : "Search applications"
   entry.text = ""
   updateRunner("")
   window.show()

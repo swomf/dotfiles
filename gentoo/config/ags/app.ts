@@ -9,13 +9,14 @@ app.start({
   css: style,
   requestHandler(argv, response) {
     // https://aylur.github.io/ags/guide/app-cli.html#messaging-from-cli
-    const [command, base64input] = argv
+    const [command, arg] = argv
     if (command === "runner") {
-      openRunner(base64input === "emoji" ? "emoji" : null)
+      if (arg === "unicode" || arg === "symbols") openRunner("symbols")
+      else openRunner(arg === "emoji" ? "emoji" : null)
       response("ok")
-    } else if (command === "runner-stdin" && base64input) {
+    } else if (command === "runner-stdin" && arg) {
       try {
-        const decoded = new TextDecoder().decode(GLib.base64_decode(base64input))
+        const decoded = new TextDecoder().decode(GLib.base64_decode(arg))
         openRunner({ lines: decoded.split(/\r?\n/).filter(Boolean), respond: response })
       } catch {
         response("")

@@ -33,3 +33,28 @@ export function fuzzyScore(candidate: string, query: string, candidateIsLowercas
 
   return score - candidate.length * 0.1 // debuff massive strings but not too much
 }
+
+type EntryScorePair<T> = { entry: T; score: number }
+
+export function topKScorers<T>(
+  entries: readonly T[],
+  getScore: (entry: T) => number | null,
+  k: number,
+): EntryScorePair<T>[] {
+  const best: EntryScorePair<T>[] = []
+
+  for (const entry of entries) {
+    const score = getScore(entry)
+    if (score === null) continue // e.g. fuzzyScore returns null
+
+    const position = best.findIndex(result => score > result.score)
+    if (position < 0) {
+      if (best.length < k) best.push({ entry, score })
+    } else {
+      best.splice(position, 0, { entry, score })
+      if (best.length > k) best.pop()
+    }
+  }
+
+  return best
+}
