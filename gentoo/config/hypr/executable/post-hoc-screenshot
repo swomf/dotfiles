@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+# When the screen is rotated during fractional scaling,
+# then specifying subregions by their geometries may
+# be inaccurate when using grim.
+# Therefore I use raw gpu-screen-recorder, then
+# trim the image post-hoc.
+image="/tmp/gsr-tmp.png"
+geometry="$(slurp -f '%wx%h+%x+%y')"
+if [ -z "$geometry" ]; then
+  exit 1
+fi
+geometry="$(echo "$geometry" | awk -F'[ +x]' '{printf "%dx%d+%d+%d\n", ($1*3)/2, ($2*3)/2, ($3*3)/2, ($4*3)/2 }')"
+gpu-screen-recorder -w screen -o "$image"
+mogrify -format png -crop "$geometry" +repage "$image"
+cat "$image" | swappy -f -
