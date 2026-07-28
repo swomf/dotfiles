@@ -84,9 +84,8 @@ export function searchSymbols(query: string, offset: number, limit: number): Run
     if ((entry.mask & mask) !== mask) return null
     return fuzzyScore(caseSensitive ? entry.name : entry.lower, query, true)
   }, offset + limit).slice(offset).map(({ entry }) => ({
-    title: entry.char,
-    description: entry.name,
-    icon: "accessories-character-map",
+    glyph: entry.char,
+    title: entry.name,
     action: { kind: "copy", text: entry.char },
   }))
 }
