@@ -11,7 +11,7 @@ notifications:
 * standard
 
 runner:
-* apps, stdin, translate, rink, symbols
+* apps, stdin, translate, dictionary, rink, symbols
 
 You need Nimbus Sans.
 

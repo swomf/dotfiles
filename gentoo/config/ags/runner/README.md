@@ -9,6 +9,7 @@ ags request runner
 - `;greek small alpha` = unicode search
 - `:fr hello world` = auto-detect and translate to French
 - `:en>ja hello world` = translate from English to Japanese
+- `:def word` = English definition (copies selected definition; needs network access)
 - null prefix instead we use `ags request runner emoji` = emoji search
   - see `providers/emojidata/update-emoji-data` and the sync script for the twemoji svgs
   - consider editing `providers/emoji-data/emoji-overrides` semantically

@@ -7,6 +7,7 @@ import Gdk from "gi://Gdk?version=3.0"
 import Gtk from "gi://Gtk?version=3.0"
 import PangoCairo from "gi://PangoCairo?version=1.0"
 import { appProvider } from "./providers/apps"
+import { dictionaryProvider } from "./providers/dictionary"
 import { emojiProvider } from "./providers/emoji"
 import { rinkProvider } from "./providers/rink"
 import { queryLines } from "./providers/stdin"
@@ -14,7 +15,8 @@ import { symbolProvider } from "./providers/symbols"
 import { translateProvider } from "./providers/translate"
 import type { Provider, RunnerResult } from "./types"
 
-const providers: Provider[] = [appProvider, rinkProvider, symbolProvider, translateProvider]
+// dictionary before translation since both use colon prefix
+const providers: Provider[] = [appProvider, rinkProvider, symbolProvider, dictionaryProvider, translateProvider]
 const PAGE_SIZE = 8
 const RESULT_MAX_WIDTH_CHARS = 54
 const [results, setResults] = createState<RunnerResult[]>([])
