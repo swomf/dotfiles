@@ -107,11 +107,13 @@ export const symbolProvider: Provider = {
       offset + limit,
     )
       .slice(offset, offset + limit)
-      .map(({ index }) => ({
-        title: String.fromCodePoint(entries.codepoints[index]),
-        description: entries.names[index],
-        icon: "accessories-character-map",
-        action: { kind: "copy", text: String.fromCodePoint(entries.codepoints[index]) },
-      }))
+      .map(({ index }) => {
+        const glyph = String.fromCodePoint(entries.codepoints[index])
+        return {
+          glyph,
+          title: entries.names[index],
+          action: { kind: "copy", text: glyph },
+        }
+      })
   },
 }
