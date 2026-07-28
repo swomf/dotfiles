@@ -169,6 +169,14 @@ function handleKeyPress(keyval: number) {
 // gtk doesnt really have max-size so i do raw pango and pre allocate
 // a drawing area. THATS your size.
 // helps with drawing unicode cuneiform stuff for example.
+function sizeGlyphWidth(area: Gtk.DrawingArea, glyph: string) {
+  const [ink] = area.create_pango_layout(glyph).get_pixel_extents()
+  if (!ink) return
+
+  const width = Math.max(44, ink.width)
+  if (area.get_size_request()[0] !== width) area.set_size_request(width, 44)
+}
+
 function drawGlyph(glyph: string) {
   return (area: Gtk.DrawingArea, cr: any) => {
     // NOTE: we dont keep track of state via save() and restore()
@@ -183,6 +191,7 @@ function drawGlyph(glyph: string) {
     // for centering. center by the "area with ink" not the "logical area"
     const [ink] = layout.get_pixel_extents()
     if (!ink) return true // return true means "its handled"; shouldnt be possible since it would just be 0x0
+    sizeGlyphWidth(area, glyph)
     const allocation = area.get_allocation()
     cr.moveTo(
       (allocation.width - ink.width) / 2 - ink.x,
@@ -283,11 +292,11 @@ export default function Runner() {
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
                       {!result.icon && result.glyph && <drawingarea
                         class="result-glyph-slot"
-                        widthRequest={44}
                         heightRequest={44}
                         halign={Gtk.Align.CENTER}
                         valign={Gtk.Align.CENTER}
                         onDraw={drawGlyph(result.glyph)}
+                        onStyleUpdated={area => sizeGlyphWidth(area, result.glyph!)}
                       />}
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
                         <label
