@@ -57,7 +57,7 @@ function findLangMatches(query: string) {
 }
 
 export async function translate(input: string, offset: number, limit: number): Promise<RunnerResult[]> {
-  const match = input.match(/^(\S+)\s+(.+)$/)
+  const match = input.match(/^(\S+)\s+(.+)$/s)
   if (!match) return []
   const [, languageSpec, text] = match
   const [sourceQuery, destinationQuery] = languageSpec.includes(">")
