@@ -303,6 +303,7 @@ export default function Runner() {
                       <box vertical hexpand spacing={2} valign={Gtk.Align.CENTER}>
                         <label
                           class="title"
+                          singleLineMode
                           label={result.title}
                           xalign={0}
                           truncate

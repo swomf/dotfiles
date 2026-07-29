@@ -62,7 +62,7 @@ export const translateProvider: Provider = {
     return input.startsWith(":") ? input.slice(1).trimStart() : null
   },
   async query(input, limit, offset = 0) {
-    const match = input.match(/^(\S+)\s+(.+)$/)
+    const match = input.match(/^(\S+)\s+(.+)$/s)
     if (!match) return []
     const [, languageSpec, text] = match
     const [sourceQuery, destinationQuery] = languageSpec.includes(">")
