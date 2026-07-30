@@ -67,9 +67,9 @@ export default function Notification(props: Props) {
         />}
         {n.image && isIcon(n.image) && <box
           expand={false}
-          valign={START}
+          valign={CENTER}
           class="icon-image">
-          <icon icon={n.image} expand halign={CENTER} valign={CENTER} />
+          <icon icon={n.image} halign={CENTER} valign={CENTER} />
         </box>}
         <box vertical>
           <label
