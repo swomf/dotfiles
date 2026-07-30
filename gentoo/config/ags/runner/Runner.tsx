@@ -23,7 +23,6 @@ const [results, setResults] = createState<RunnerResult[]>([])
 const [selected, setSelected] = createState(0)
 const [page, setPage] = createState(0)
 const [hasNextPage, setHasNextPage] = createState(false)
-const [prompt, setPrompt] = createState("Search applications")
 
 let entry: Gtk.Entry
 let generation = 0
@@ -212,21 +211,21 @@ export function openRunner() {
   stdinLines = null
   stdinResponse = null
   forcedProvider = null
-  presentRunner("Search applications")
+  presentRunner()
 }
 
 export function openEmojiRunner() {
   stdinLines = null
   stdinResponse = null
   forcedProvider = emojiProvider
-  presentRunner("Search emoji")
+  presentRunner()
 }
 
 export function openSymbolRunner() {
   stdinLines = null
   stdinResponse = null
   forcedProvider = symbolProvider
-  presentRunner("Search Unicode symbols")
+  presentRunner()
 }
 
 export function openStdin(lines: string[], response: (value: string) => void) {
@@ -234,12 +233,11 @@ export function openStdin(lines: string[], response: (value: string) => void) {
   stdinLines = lines
   stdinResponse = response
   forcedProvider = null
-  presentRunner("Search")
+  presentRunner()
 }
 
-function presentRunner(nextPrompt: string) {
+function presentRunner() {
   const window = app.get_window("runner")!
-  setPrompt(nextPrompt)
   entry.text = ""
   update("")
   window.show()
@@ -282,7 +280,6 @@ export default function Runner() {
               <icon icon="system-search-symbolic" pixelSize={20} />
               <entry
                 hexpand
-                placeholderText={prompt}
                 onChanged={self => update(self.text)}
                 $={self => entry = self}
               />
