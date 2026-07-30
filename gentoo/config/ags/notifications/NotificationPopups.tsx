@@ -36,7 +36,7 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     anchor={TOP | RIGHT}>
     <box vertical>
-      <For each={notifications} id={notification => notification.id}>
+      <For each={notifications}>
         {notification => (
           <Notification
             notification={notification}

@@ -75,6 +75,13 @@ eventbox.notification {
     .body {
       color: theme.alpha(theme.$fg, 0.8);
     }
+    .icon-image {
+      min-width: 1.2em;
+      margin-right: .5rem;
+      icon {
+        font-size: 1.2em;
+      }
+    }
     .image {
       border: 1px solid theme.alpha(theme.$fg, .02);
       margin-right: .5rem;
