@@ -42,7 +42,7 @@ function Wifi() {
   return (
     <icon
       tooltipText={createBinding(wifi, "ssid").as(String)}
-      class="Wifi"
+      class="wifi"
       icon={createBinding(wifi, "iconName")}
     />
   )
@@ -56,12 +56,11 @@ function CPU() {
     (stdout: string) =>
       Math.round(Number(stdout) / 1000)
   )
-  // TODO: reorganize magic constant (this css color) into different file
-  const dangerousTemp = cpuTemp.as(p => p >= 90 ? 'color: #FF7F7F' : '')
+  const temperatureClass = cpuTemp.as(p => p >= 90 ? "cpu danger" : "cpu")
 
-  return <box class="CPU" vertical>
-    <label angle={90} label={cpuTemp.as(p => `${p}°C`)} css={dangerousTemp} />
-    <icon icon="cpu-symbolic" css={dangerousTemp} />
+  return <box class={temperatureClass} vertical>
+    <label angle={90} label={cpuTemp.as(p => `${p}°C`)} />
+    <icon icon="cpu-symbolic" />
   </box>
 }
 
@@ -77,7 +76,7 @@ function Memory() {
       return `${free} / ${total}`
     }
   )
-  return <box class="Memory" vertical>
+  return <box class="memory" vertical>
     <label angle={90} label={mem} />
     <icon icon="device_mem" />
   </box>
@@ -120,7 +119,7 @@ function Sound() {
 function BatteryLevel() {
   const bat = Battery.get_default()
 
-  return <box class="Battery"
+  return <box class="battery"
     vertical
     visible={createBinding(bat, "isPresent")}>
     <label angle={90} label={createBinding(bat, "percentage").as(p =>
@@ -137,7 +136,7 @@ function Workspaces() {
     .filter(ws => ws.id > 0))
   const focusedWorkspace = createBinding(hypr, "focusedWorkspace")
 
-  return <box class="Workspaces" vertical>
+  return <box class="workspaces" vertical>
     <For each={workspaces}>
       {ws => (
         <button
@@ -155,7 +154,7 @@ function FocusedClient() {
   const focused = createBinding(hypr, "focusedClient")
 
   return <box
-    class="Focused"
+    class="focused-client"
     vertical
     visible={focused.as(Boolean)}>
     <With value={focused}>
@@ -170,7 +169,7 @@ function Time({ format = "%Y-%m-%d %H:%M:%S %a" }) {
 
   return <label
     angle={90}
-    class="Time"
+    class="time"
     label={time}
   />
 }
@@ -181,7 +180,7 @@ export default function Bar(monitor: Gdk.Monitor) {
   return <window
     name="bar"
     application={app}
-    class="Bar"
+    class="bar"
     gdkmonitor={monitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     layer={Astal.Layer.TOP}
@@ -191,7 +190,7 @@ export default function Bar(monitor: Gdk.Monitor) {
         <Workspaces />
       </box>
       <box vexpand />
-      <box hexpand vertical class="BarStuff">
+      <box hexpand vertical class="bar-stuff">
         <SysTray />
         <Wifi />
         <CPU />
