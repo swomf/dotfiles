@@ -8,14 +8,14 @@ window.runner {
   .runner-shell {
     min-width: 640px;
     margin: 36px 24px 0;
-    border: 1px solid theme.$fg; // not $border because i want a highlight.
+    border: 1px solid theme.$accent;
     border-radius: 14px;
     background: theme.$bg;
   }
 
   .runner-input {
     padding: 16px 18px;
-    border-bottom: 1px solid theme.$headerbar-border;
+    border-bottom: 1px solid theme.$divider;
     // when it has the menu open we have to de-round
     // the bottom left and bottom right corner of the input
     border-radius: 13px 13px 0 0;
