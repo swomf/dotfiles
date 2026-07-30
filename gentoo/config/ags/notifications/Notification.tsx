@@ -33,7 +33,7 @@ export default function Notification(props: Props) {
   const { START, CENTER, END } = Gtk.Align
 
   return <eventbox
-    class={`Notification ${urgency(n)}`}
+    class={`notification ${urgency(n)}`}
     onHoverLost={onHoverLost}>
     <box vertical>
       <box class="header">

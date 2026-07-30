@@ -254,12 +254,15 @@ function presentRunner(nextPrompt: string) {
 export default function Runner() {
   const { TOP, RIGHT, BOTTOM, LEFT } = Astal.WindowAnchor
 
+  // GTK semantic CSS classes used below:
+  // https://docs.gtk.org/gtk3/const.STYLE_CLASS_FLAT.html
+  // https://docs.gtk.org/gtk3/const.STYLE_CLASS_DIM_LABEL.html
   return (
     <window
       name="runner"
       namespace="launcher" // this way it has the same namespace as fuzzel
       application={app}
-      class="Runner"
+      class="runner"
       visible={false}
       layer={Astal.Layer.OVERLAY}
       keymode={Astal.Keymode.EXCLUSIVE}
@@ -288,7 +291,7 @@ export default function Runner() {
               <For each={results}>
                 {(result, index) => (
                   <button
-                    class={selected.as(current => current === index() ? "selected" : "")}
+                    class={selected.as(current => current === index() ? "flat selected" : "flat")}
                     onClicked={() => activateResult(index())}>
                     <box class="runner-result">
                       {result.icon && <icon icon={result.icon} pixelSize={44} />}
@@ -310,7 +313,7 @@ export default function Runner() {
                           maxWidthChars={RESULT_MAX_WIDTH_CHARS}
                         />
                         <label
-                          class="description"
+                          class="description dim-label"
                           label={result.description ?? ""}
                           xalign={0}
                           truncate

@@ -1,13 +1,17 @@
 @use "sass:string";
 
-$bg: #000000;
-$fg: #e0e0e0;
 $font: "Nimbus Sans", "Noto Sans", "Noto Sans Symbols 2", "Noto Sans Symbols", "Noto Color Emoji", sans-serif;
 
-// GTK resolves these at runtime. Use alpha() rather than Sass color
-// functions when changing their opacity.
-$fg-theme: #{"@theme_fg_color"};
-$bg-theme: #{"@theme_bg_color"};
+// GTK resolves symbolic colors from the active theme at runtime.
+// https://docs.gtk.org/gtk3/css-overview.html#colors
+$fg: #{"@theme_fg_color"};
+$bg: #{"@theme_bg_color"};
+$selected-fg: #{"@theme_selected_fg_color"};
+$selected-bg: #{"@theme_selected_bg_color"};
+$border: #{"@borders"};
+$error: #{"@error_color"};
+$headerbar-bg: #{"@headerbar_bg_color"};
+$headerbar-border: #{"@headerbar_border_color"};
 
 @function alpha($color, $amount) {
   @return string.unquote("alpha(#{$color},#{$amount})");

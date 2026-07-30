@@ -1,12 +1,10 @@
 @use "../theme";
 
-$error: red;
-
-window.NotificationPopups {
+window.notification-popups {
   all: unset;
 }
 
-eventbox.Notification {
+eventbox.notification {
   &:first-child>box {
     margin-top: 1rem;
   }
@@ -17,26 +15,26 @@ eventbox.Notification {
   >box {
     min-width: 400px;
     border-radius: 13px;
-    background-color: theme.$bg-theme;
+    background-color: theme.$bg;
     margin: .5rem 1rem .5rem 1rem;
     // if box-shadow fails, an ugly grey border is created around the box
     // box-shadow: 2px 3px 8px 0 theme.alpha(black, 0.4);
-    border: 1pt solid theme.alpha(theme.$fg-theme, 1);
+    border: 1pt solid theme.$border;
   }
   &.critical>box {
-    border: 1pt solid theme.alpha($error, .4);
+    border: 1pt solid theme.alpha(theme.$error, .4);
     .header {
       .app-name {
-        color: theme.alpha($error, .8);
+        color: theme.alpha(theme.$error, .8);
       }
       .app-icon {
-        color: theme.alpha($error, .6);
+        color: theme.alpha(theme.$error, .6);
       }
     }
   }
   .header {
     padding: .5rem;
-    color: theme.alpha(theme.$fg-theme, 0.5);
+    color: theme.alpha(theme.$fg, 0.5);
     .app-icon {
       margin: 0 .4rem;
     }
@@ -53,9 +51,9 @@ eventbox.Notification {
     button {
       border-radius: 8px;
       &:hover {
-        background-color: theme.alpha(theme.$fg-theme, .8);
+        background-color: theme.alpha(theme.$fg, .8);
         icon {
-          color: theme.$bg-theme;
+          color: theme.$bg;
         }
       }
       padding: .2rem;
@@ -65,20 +63,20 @@ eventbox.Notification {
   }
   separator {
     margin: 0 .4rem;
-    background-color: theme.alpha(theme.$fg-theme, .1);
+    background-color: theme.alpha(theme.$fg, .1);
   }
   .content {
     margin: 1rem;
     margin-top: .5rem;
     .summary {
       font-size: 1.2em;
-      color: theme.$fg-theme;
+      color: theme.$fg;
     }
     .body {
-      color: theme.alpha(theme.$fg-theme, 0.8);
+      color: theme.alpha(theme.$fg, 0.8);
     }
     .image {
-      border: 1px solid theme.alpha(theme.$fg-theme, .02);
+      border: 1px solid theme.alpha(theme.$fg, .02);
       margin-right: .5rem;
       border-radius: 9px;
       min-width: 100px;

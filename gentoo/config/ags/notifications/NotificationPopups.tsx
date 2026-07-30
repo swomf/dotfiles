@@ -31,7 +31,7 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
 
   return <window
     application={app}
-    class="NotificationPopups"
+    class="notification-popups"
     gdkmonitor={gdkmonitor}
     exclusivity={Astal.Exclusivity.EXCLUSIVE}
     anchor={TOP | RIGHT}>
