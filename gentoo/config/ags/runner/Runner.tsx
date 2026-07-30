@@ -172,8 +172,6 @@ export function openRunner(next: RunnerMode = null) {
   if (mode && typeof mode === "object") mode.respond("")
   mode = next
   const window = app.get_window("runner")!
-  entry.placeholder_text = next === "emoji" ? "Search emoji" :
-    next === "symbols" ? "Search Unicode symbols" : next ? "Search" : "Search applications"
   entry.text = ""
   updateRunner("")
   window.show()
