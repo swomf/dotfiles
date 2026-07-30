@@ -11,6 +11,6 @@ vim.opt.conceallevel = 0
 -- vim.opt.softtabstop = 0
 
 -- synctex setup
-vim.g.vimtex_compiler_enabled = 0
+vim.g.vimtex_compiler_enabled = 0 -- i use swomf/latex-fast-compile
 vim.g.vimtex_view_method = "zathura_simple"
-vim.g.vimtex_view_automatic = 1
+-- see keymaps also, since i run zathura manually.
