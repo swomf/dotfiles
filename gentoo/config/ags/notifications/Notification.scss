@@ -19,7 +19,7 @@ eventbox.notification {
     margin: .5rem 1rem .5rem 1rem;
     // if box-shadow fails, an ugly grey border is created around the box
     // box-shadow: 2px 3px 8px 0 theme.alpha(black, 0.4);
-    border: 1pt solid theme.$border;
+    border: 1pt solid theme.$accent;
   }
   &.critical>box {
     border: 1pt solid theme.alpha(theme.$error, .4);

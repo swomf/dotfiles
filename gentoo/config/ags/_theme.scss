@@ -7,11 +7,11 @@ $font: "Nimbus Sans", "Noto Sans", "Noto Sans Symbols 2", "Noto Sans Symbols", "
 $fg: #{"@theme_fg_color"};
 $bg: #{"@theme_bg_color"};
 $selected-fg: #{"@theme_selected_fg_color"};
-$selected-bg: #{"@theme_selected_bg_color"};
-$border: #{"@borders"};
+$accent: #{"@theme_selected_bg_color"};
+$selected-bg: $accent;
+$divider: #{"@borders"};
 $error: #{"@error_color"};
 $headerbar-bg: #{"@headerbar_bg_color"};
-$headerbar-border: #{"@headerbar_border_color"};
 
 @function alpha($color, $amount) {
   @return string.unquote("alpha(#{$color},#{$amount})");

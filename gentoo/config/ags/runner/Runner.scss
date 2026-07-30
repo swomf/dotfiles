@@ -11,14 +11,14 @@ window.runner {
   .runner-shell {
     min-width: 640px;
     margin: 36px 24px 0;
-    border: 1px solid theme.$fg; // not $border because i want a highlight.
+    border: 1px solid theme.$accent;
     border-radius: $shell-radius;
     background: theme.$bg;
   }
 
   .runner-input {
     padding: 16px 18px;
-    border-bottom: 1px solid theme.$headerbar-border;
+    border-bottom: 1px solid theme.$divider;
     border-radius: $input-radius $input-radius 0 0;
     background: theme.$headerbar-bg;
 
