@@ -21,7 +21,6 @@ function SysTray() {
 
         return (
           <menubutton
-            vexpand
             hexpand
             tooltipMarkup={createBinding(item, "tooltipMarkup")}
             usePopover={false}
