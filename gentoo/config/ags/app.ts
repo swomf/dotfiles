@@ -3,6 +3,8 @@ import GLib from "gi://GLib?version=2.0"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
 import NotificationPopups from "./notifications/NotificationPopups"
+import { configureNotificationCapabilities } from "./notifications/capabilities"
+import { initNotificationSounds } from "./notifications/sound"
 import Runner, { openEmojiRunner, openRunner, openStdin, openSymbolRunner } from "./runner/Runner"
 
 app.start({
@@ -27,6 +29,8 @@ app.start({
     }
   },
   main() {
+    configureNotificationCapabilities()
+    initNotificationSounds()
     const monitors = app.get_monitors()
     monitors.map(Bar)
     monitors.map(NotificationPopups)

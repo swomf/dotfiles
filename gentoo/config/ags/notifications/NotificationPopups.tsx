@@ -13,6 +13,8 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
     setNotifications(list => list.filter(notification => notification.id !== id))
 
   const notified = notifd.connect("notified", (_, id) => {
+    if (notifd.dontDisturb) return
+
     const notification = notifd.get_notification(id)
     if (notification) {
       setNotifications(list => [
@@ -23,10 +25,14 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
   })
 
   const resolved = notifd.connect("resolved", (_, id) => remove(id))
+  const dontDisturb = notifd.connect("notify::dont-disturb", () => {
+    if (notifd.dontDisturb) setNotifications([])
+  })
 
   onCleanup(() => {
     notifd.disconnect(notified)
     notifd.disconnect(resolved)
+    notifd.disconnect(dontDisturb)
   })
 
   return <window
