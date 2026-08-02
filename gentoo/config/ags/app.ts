@@ -1,4 +1,5 @@
 import app from "ags/gtk3/app"
+import Gio from "gi://Gio?version=2.0"
 import GLib from "gi://GLib?version=2.0"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
@@ -26,6 +27,13 @@ app.start({
     }
   },
   main() {
+    // https://specifications.freedesktop.org/notification/latest/protocol.html#command-get-capabilities
+    const settings = Gio.Settings.new("io.astal.notifd")
+    const key = "server-capabilites"
+    const caps = settings.get_strv(key)
+    const supported = caps.filter(cap => cap !== "body-images" && cap !== "sound")
+    if (supported.length !== caps.length) settings.set_strv(key, supported)
+
     const monitors = app.get_monitors()
     monitors.map(Bar)
     monitors.map(NotificationPopups)

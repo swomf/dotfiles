@@ -32,6 +32,9 @@ eventbox.notification {
       }
     }
   }
+  &.category-error>box {
+    border-color: theme.alpha(theme.$error, .4);
+  }
   .header {
     padding: .5rem;
     color: theme.alpha(theme.$fg, 0.5);
