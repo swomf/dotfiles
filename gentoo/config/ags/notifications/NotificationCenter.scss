@@ -1,0 +1,107 @@
+@use "../theme";
+
+window.notification-center {
+  all: unset;
+  background-color: transparent;
+}
+
+// Entrance animation. The layer surface is a fixed full-height rectangle
+// (see NotificationCenter.tsx), so Hyprland has nothing to animate for us --
+// the shell fakes a two-phase slide-in instead. `.entering` is the parked
+// state and carries `transition: none` so applying it snaps; the animation
+// runs when the class is dropped and these base transitions take over.
+$enter-curve: cubic-bezier(.1, 1, 0, 1);
+
+.notification-center-shell {
+  min-width: 440px;
+  background-color: transparent;
+
+  &.entering {
+    .notification-center-header {
+      margin-top: -5rem;
+      opacity: 0;
+      transition: none;
+    }
+    .notification-center-scroll {
+      opacity: 0;
+      transition: none;
+    }
+  }
+
+  .notification-center-header {
+    transition: margin-top 160ms $enter-curve, opacity 120ms ease-out;
+    padding: .8rem 1rem;
+    background-color: theme.$bg;
+    border: 1pt solid theme.$accent;
+    border-bottom-left-radius: 18px;
+    .title {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: theme.$fg;
+    }
+    .count {
+      color: theme.alpha(theme.$fg, .55);
+      font-weight: 600;
+      margin-left: .75rem;
+    }
+    button {
+      border-radius: 8px;
+      padding: .3rem;
+      margin-left: .4rem;
+      min-width: 0;
+      min-height: 0;
+      &:hover {
+        background-color: theme.alpha(theme.$fg, .1);
+      }
+      &.active {
+        background-color: theme.alpha(theme.$accent, .8);
+        icon {
+          color: theme.$selected-fg;
+        }
+      }
+      &:disabled icon {
+        color: theme.alpha(theme.$fg, .3);
+      }
+    }
+    button.close {
+      @include theme.notification-close-button;
+    }
+  }
+
+  // second phase: trails the header in by `transition-delay`
+  .notification-center-scroll {
+    transition: opacity 140ms ease-out 70ms;
+  }
+
+  .notification-center-scroll,
+  .notification-center-scroll viewport,
+  .notification-center-list {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  // the notification widget carries its own outer margins
+  .notification-center-list {
+    margin: .5rem 0;
+
+    // Per-row entrance, same parked-then-released trick as the shell above.
+    // The margin lives on the inner box because eventboxes can not take one;
+    // .5rem is the resting value set in Notification.scss.
+    //
+    // Vertical, not horizontal: the surface sizes to its content width, so
+    // animating margin-left grows the window and -- since it is anchored
+    // RIGHT -- drags the whole panel sideways and back. Height is already
+    // pinned by the TOP|BOTTOM anchor, so margin-top costs nothing.
+    .notification > box {
+      transition: margin-top 180ms $enter-curve, opacity 140ms ease-out;
+    }
+    // negative: rows insert newest-first, so a new one should drop in from the
+    // top edge rather than rise from below. The viewport clips the overhang.
+    .notification.entering > box {
+      margin-top: -2rem;
+      opacity: 0;
+      transition: none;
+    }
+  }
+}

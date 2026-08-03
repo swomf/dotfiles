@@ -16,3 +16,19 @@ $headerbar-bg: #{"@headerbar_bg_color"};
 @function alpha($color, $amount) {
   @return string.unquote("alpha(#{$color},#{$amount})");
 }
+
+@mixin notification-close-button {
+  color: alpha($fg, .5);
+  border-radius: 8px;
+  padding: .2rem;
+  min-width: 0;
+  min-height: 0;
+
+  &:hover {
+    background-color: alpha($fg, .8);
+
+    icon {
+      color: $bg;
+    }
+  }
+}

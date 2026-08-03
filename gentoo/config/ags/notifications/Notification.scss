@@ -54,16 +54,7 @@ eventbox.notification {
       margin: 0 .4rem;
     }
     button {
-      border-radius: 8px;
-      &:hover {
-        background-color: theme.alpha(theme.$fg, .8);
-        icon {
-          color: theme.$bg;
-        }
-      }
-      padding: .2rem;
-      min-width: 0;
-      min-height: 0;
+      @include theme.notification-close-button;
     }
   }
   separator {

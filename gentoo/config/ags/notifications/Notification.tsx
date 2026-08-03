@@ -1,6 +1,7 @@
 import { Gtk, Astal } from "ags/gtk3"
 import Gio from "gi://Gio?version=2.0"
 import GLib from "gi://GLib?version=2.0"
+import Pango from "gi://Pango?version=1.0"
 import Notifd from "gi://AstalNotifd"
 
 const isIcon = (icon: string) =>
@@ -53,6 +54,14 @@ const time = (time: number, format = "%H:%M") => GLib.DateTime
   .new_from_unix_local(time)
   .format(format)!
 
+const relative = (unix: number) => {
+  const minutes = Math.floor((Date.now() / 1000 - unix) / 60)
+  if (minutes < 1) return "now"
+  if (minutes < 60) return `${minutes}m ago`
+  if (minutes < 60 * 24) return `${Math.floor(minutes / 60)}h ago`
+  return time(unix, "%b %-d")
+}
+
 const urgency = (n: Notifd.Notification) => {
   const { LOW, NORMAL, CRITICAL } = Notifd.Urgency
   // match operator when?
@@ -65,12 +74,16 @@ const urgency = (n: Notifd.Notification) => {
 }
 
 type Props = {
-  onHoverLost(self: Astal.EventBox): void
+  onHoverLost?(self: Astal.EventBox): void
   notification: Notifd.Notification
+  // popups show a clock, the center shows how long ago it arrived
+  relativeTime?: boolean
+  // the center uses this to play an entrance animation on freshly built rows
+  setup?(self: Astal.EventBox): void
 }
 
 export default function Notification(props: Props) {
-  const { notification: n, onHoverLost } = props
+  const { notification: n, onHoverLost, relativeTime, setup } = props
   const { START, CENTER, END } = Gtk.Align
   const actions = n.get_actions()
   const defaultAction = actions.find(({ id }) => id === "default")
@@ -80,6 +93,7 @@ export default function Notification(props: Props) {
 
   return <eventbox
     class={`notification ${urgency(n)}${categoryClass(n.category)}`}
+    $={setup}
     onClick={(_, event) => {
       if (event.button === Astal.MouseButton.PRIMARY && defaultAction)
         n.invoke(defaultAction.id)
@@ -102,9 +116,9 @@ export default function Notification(props: Props) {
           class="time"
           hexpand
           halign={END}
-          label={time(n.time)}
+          label={relativeTime ? relative(n.time) : time(n.time)}
         />
-        <button onClicked={() => n.dismiss()}>
+        <button canFocus={false} onClicked={() => n.dismiss()}>
           <icon icon="window-close-symbolic" />
         </button>
       </box>
@@ -136,6 +150,7 @@ export default function Notification(props: Props) {
             lines={2}
             maxWidthChars={48}
             wrap
+            wrapMode={Pango.WrapMode.WORD_CHAR}
             truncate
           />
           {n.body && <label
@@ -145,6 +160,7 @@ export default function Notification(props: Props) {
             halign={START}
             xalign={0}
             maxWidthChars={48}
+            wrapMode={Pango.WrapMode.WORD_CHAR}
             justifyFill
             label={n.body}
           />}
@@ -154,6 +170,7 @@ export default function Notification(props: Props) {
         {visibleActions.map(({ label, id }) => (
           <button
             hexpand
+            canFocus={false}
             tooltipText={n.actionIcons ? label : undefined}
             $={self => self.get_accessible().set_name(label)}
             onClicked={() => n.invoke(id)}>

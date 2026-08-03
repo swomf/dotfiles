@@ -55,6 +55,7 @@ hl.bind("CTRL + SUPER + L", hl.dsp.exec_cmd("hyprlock -c ~/.config/hypr/hyprlock
 hl.bind("SUPER + R", hl.dsp.exec_cmd("ags request runner"))
 hl.bind("SUPER + period", hl.dsp.exec_cmd("ags request runner emoji"))
 hl.bind("SUPER + U", hl.dsp.exec_cmd("ags request runner unicode"))
+hl.bind("SUPER + N", hl.dsp.exec_cmd("ags request notifications"))
 
 -- ########################### misc Hyprland window/workspace binds ############################
 
