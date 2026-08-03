@@ -12,7 +12,7 @@ import NotificationCenter, {
   openNotificationCenter,
   toggleNotificationCenter,
 } from "./notifications/NotificationCenter"
-import Runner, { openEmojiRunner, openRunner, openStdin, openSymbolRunner } from "./runner/Runner"
+import Runner, { openEmojiRunner, openRinkRunner, openRunner, openStdin, openSymbolRunner } from "./runner/Runner"
 
 app.start({
   css: style,
@@ -22,6 +22,7 @@ app.start({
     if (command === "runner") {
       if (payload === "emoji") openEmojiRunner()
       else if (payload === "unicode" || payload === "symbols") openSymbolRunner()
+      else if (payload === "rink") openRinkRunner()
       else openRunner()
       response("ok")
     } else if (command === "runner-stdin" && payload) {

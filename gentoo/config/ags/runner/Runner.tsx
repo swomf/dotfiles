@@ -228,6 +228,13 @@ export function openSymbolRunner() {
   presentRunner()
 }
 
+export function openRinkRunner() {
+  stdinLines = null
+  stdinResponse = null
+  forcedProvider = rinkProvider
+  presentRunner()
+}
+
 export function openStdin(lines: string[], response: (value: string) => void) {
   if (stdinResponse) stdinResponse("")
   stdinLines = lines
