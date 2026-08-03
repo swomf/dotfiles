@@ -4,6 +4,7 @@ require("wm.keybinds.spin-monitor")
 require("wm.keybinds.floating-windows")
 require("wm.keybinds.goto-app")
 require("wm.keybinds.fullscreen")
+require("wm.keybinds.window-tagging")
 
 -- stylua: ignore start
 
@@ -93,8 +94,3 @@ hl.bind("SUPER + ALT + W",     hl.dsp.window.resize({ x = 0,   y = -20, relative
 hl.bind("SUPER + ALT + S",     hl.dsp.window.resize({ x = 0,   y = 20,  relative = true }), {repeating=true})
 -- hl.bind("CTRL + SUPER + backslash", hl.dsp.window.resize({ x = 640, y = 480 }))
 ]]
-
--- tag window effects (see rules.lua)
-hl.bind("SUPER + B", hl.dsp.window.tag({ tag = "blurry" }))
-hl.bind("SUPER + N", hl.dsp.window.tag({ tag = "transparent" }))
-hl.bind("SUPER + P", hl.dsp.window.pin())

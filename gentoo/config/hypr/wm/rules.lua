@@ -13,8 +13,9 @@ hl.window_rule({ match = { class = "^(ristretto)$" }, no_blur = true })
 hl.window_rule({ match = { class = "^(swappy)$" }, no_blur = true })
 
 -- Tags
-hl.window_rule({ match = { tag = "blurry" }, opacity = "0.6 override" })
-hl.window_rule({ match = { tag = "transparent" }, opacity = "0.4 override", no_blur = true })
+hl.window_rule({ match = { tag = "blurry1" }, opacity = "0.6 override" })
+hl.window_rule({ match = { tag = "blurry2" }, opacity = "0.4 override", no_blur = true })
+hl.window_rule({ match = { tag = "blurry3" }, opacity = "0.6 override" })
 
 -- Decorative overlays
 hl.window_rule({ match = { title = "rule-of-thirds" }, no_blur = true })
