@@ -23,7 +23,7 @@ const [selected, setSelected] = createState(0)
 let entry: Gtk.Entry
 let generation = 0 // shitty way to not render old data
 type Chooser = { lines: string[]; respond: (value: string) => void } // typeof Chooser is object
-type RunnerMode = Chooser | "emoji" | "symbols" | null
+type RunnerMode = Chooser | "emoji" | "symbols" | "rink" | null
 let mode: RunnerMode = null
 
 function dismissRunner(value = "") {
@@ -37,6 +37,7 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
   const current = ++generation
   const offset = target?.offset ?? 0
   const limit = PAGE_SIZE + 1 // extra row means another page exists
+  const prefix = mode === "rink" ? "=" : input[0]
   let results: RunnerResult[]
 
   // the paging here is so that spammed unicode search doesnt obliterate our CPU
@@ -48,7 +49,7 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
     results = []
   } else if (mode === "emoji") {
     results = searchEmoji(input, offset, limit)
-  } else if (mode === "symbols" || input.startsWith(";")) {
+  } else if (mode === "symbols" || prefix === ";") {
     setPage({ offset, results: [] })
     if (!target) {
       await new Promise<void>(resolve => setTimeout(resolve, 60))
@@ -56,15 +57,15 @@ async function updateRunner(input: string, target?: { offset: number; selected: 
     }
     results = searchSymbols(mode === "symbols" ? input : input.slice(1).trim(), offset, limit)
   } else {
-    switch (input[0]) {
+    switch (prefix) {
       case "=":
       case ":":
         setPage({ offset, results: [] })
         if (!target) {
-          await new Promise<void>(resolve => setTimeout(resolve, input[0] === "=" ? 80 : 300))
+          await new Promise<void>(resolve => setTimeout(resolve, prefix === "=" ? 80 : 300))
           if (current !== generation) return
         }
-        if (input[0] === "=") results = await searchRink(input.slice(1).trim())
+        if (prefix === "=") results = await searchRink(mode === "rink" ? input : input.slice(1).trim())
         else if (input.startsWith(":def")) results = await searchDictionary(input.slice(4).trim(), offset, limit)
         else results = await translate(input.slice(1).trimStart(), offset, limit)
         if (current !== generation) return

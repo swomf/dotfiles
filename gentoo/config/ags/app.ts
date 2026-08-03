@@ -15,7 +15,7 @@ app.start({
     const [command, arg] = argv
     if (command === "runner") {
       if (arg === "unicode" || arg === "symbols") openRunner("symbols")
-      else openRunner(arg === "emoji" ? "emoji" : null)
+      else openRunner(arg === "emoji" || arg === "rink" ? arg : null)
       response("ok")
     } else if (command === "runner-stdin" && arg) {
       try {

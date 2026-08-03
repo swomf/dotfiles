@@ -21,6 +21,7 @@ ags request runner
     ```
 
 - we can also use `ags request runner {symbols|unicode}` = unicode search
+- `ags request runner rink` = unit calc+convert
 
 also! fuzzel replacement (newline seps). dont get rekt by argmax though (i didnt want to do a socket)
 
