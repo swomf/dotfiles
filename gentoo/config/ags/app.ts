@@ -1,9 +1,11 @@
 import app from "ags/gtk3/app"
 import Gio from "gi://Gio?version=2.0"
 import GLib from "gi://GLib?version=2.0"
+import Notifd from "gi://AstalNotifd"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
 import NotificationPopups from "./notifications/NotificationPopups"
+import NotificationCenter, { showCenter } from "./notifications/NotificationCenter"
 import Runner, { openRunner } from "./runner/Runner"
 
 app.start({
@@ -22,6 +24,17 @@ app.start({
       } catch {
         response("")
       }
+    } else if (command === "notifications") {
+      if (arg === "dnd") {
+        const notifd = Notifd.get_default()
+        notifd.dontDisturb = !notifd.dontDisturb
+        response(notifd.dontDisturb ? "dnd on" : "dnd off")
+        return
+      }
+      if (arg === "open") showCenter(true)
+      else if (arg === "close") showCenter(false)
+      else showCenter()
+      response("ok")
     } else {
       response(`unknown request: ${command ?? ""}`)
     }
@@ -34,9 +47,11 @@ app.start({
     const supported = caps.filter(cap => cap !== "body-images" && cap !== "sound")
     if (supported.length !== caps.length) settings.set_strv(key, supported)
 
+    Notifd.get_default().ignoreTimeout = true // popups expire separately from history
     const monitors = app.get_monitors()
     monitors.map(Bar)
     monitors.map(NotificationPopups)
+    NotificationCenter()
     Runner()
   },
 })

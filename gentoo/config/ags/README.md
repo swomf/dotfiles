@@ -8,7 +8,8 @@ bar.ts
 * mmmm-dd-yy hh:mm:ss day clock
 
 notifications:
-* standard
+* daemon
+* dnd
 
 runner:
 * apps, stdin, translate, dictionary, rink, symbols

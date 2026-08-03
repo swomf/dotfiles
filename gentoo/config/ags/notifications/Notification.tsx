@@ -1,6 +1,7 @@
 import { Gtk, Astal } from "ags/gtk3"
 import Gio from "gi://Gio?version=2.0"
 import GLib from "gi://GLib?version=2.0"
+import Pango from "gi://Pango?version=1.0"
 import Notifd from "gi://AstalNotifd"
 
 const isIcon = (icon: string) =>
@@ -28,12 +29,13 @@ const urgency = (n: Notifd.Notification) => {
 }
 
 type Props = {
-  onHoverLost(self: Astal.EventBox): void
+  onHoverLost?(self: Astal.EventBox): void
   notification: Notifd.Notification
+  setup?(self: Astal.EventBox): void
 }
 
 export default function Notification(props: Props) {
-  const { notification: n, onHoverLost } = props
+  const { notification: n, onHoverLost, setup } = props
   const { START, CENTER, END } = Gtk.Align
   const actions = n.get_actions()
   const defaultAction = actions.find(({ id }) => id === "default")
@@ -44,6 +46,7 @@ export default function Notification(props: Props) {
 
   return <eventbox
     class={`notification ${urgency(n)}${errorCategory ? " category-error" : ""}`}
+    $={setup}
     onClick={(_, event) => {
       if (event.button === Astal.MouseButton.PRIMARY && defaultAction)
         n.invoke(defaultAction.id)
@@ -68,7 +71,7 @@ export default function Notification(props: Props) {
           halign={END}
           label={time(n.time)}
         />
-        <button onClicked={() => n.dismiss()}>
+        <button canFocus={false} onClicked={() => n.dismiss()}>
           <icon icon="window-close-symbolic" />
         </button>
       </box>
@@ -94,6 +97,7 @@ export default function Notification(props: Props) {
             lines={2}
             maxWidthChars={48}
             wrap
+            wrapMode={Pango.WrapMode.WORD_CHAR}
             truncate
           />
           {n.body && <label
@@ -103,6 +107,7 @@ export default function Notification(props: Props) {
             halign={START}
             xalign={0}
             maxWidthChars={48}
+            wrapMode={Pango.WrapMode.WORD_CHAR}
             justifyFill
             label={n.body}
           />}
@@ -112,6 +117,7 @@ export default function Notification(props: Props) {
         {visibleActions.map(({ label, id }) => (
           <button
             hexpand
+            canFocus={false}
             tooltipText={n.actionIcons ? label : undefined}
             $={self => self.get_accessible().set_name(label)}
             onClicked={() => n.invoke(id)}>

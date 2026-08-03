@@ -1,0 +1,84 @@
+@use "../theme";
+
+window.notification-center {
+  all: unset;
+  background-color: transparent;
+}
+
+$hypr-menu-decel: cubic-bezier(.1, 1, 0, 1);
+
+.notification-center-shell {
+  min-width: 440px;
+  background-color: transparent;
+
+  &.entering {
+    .notification-center-header {
+      margin-top: -5rem;
+      opacity: 0;
+      transition: none;
+    }
+    .notification-center-scroll {
+      opacity: 0;
+      transition: none;
+    }
+  }
+
+  .notification-center-header {
+    transition: margin-top 160ms $hypr-menu-decel, opacity 120ms ease-out;
+    padding: .8rem 1rem;
+    background-color: theme.$bg;
+    border: 1pt solid theme.$accent;
+    border-bottom-left-radius: 18px;
+    .title {
+      font-size: 1.1em;
+      font-weight: bold;
+      color: theme.$fg;
+    }
+    .count {
+      color: theme.alpha(theme.$fg, .55);
+      font-weight: 600;
+      margin-left: .75rem;
+    }
+    button {
+      border-radius: 8px;
+      padding: .3rem;
+      margin-left: .4rem;
+      min-width: 0;
+      min-height: 0;
+      &:hover {
+        background-color: theme.alpha(theme.$fg, .1);
+      }
+      &:disabled icon {
+        color: theme.alpha(theme.$fg, .3);
+      }
+    }
+    button.close {
+      @include theme.notification-close-button;
+    }
+  }
+
+  .notification-center-scroll {
+    transition: opacity 140ms ease-out 70ms;
+  }
+
+  .notification-center-scroll,
+  .notification-center-scroll viewport,
+  .notification-center-list {
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  .notification-center-list {
+    margin: .5rem 0;
+
+    .notification > box {
+      transition: margin-top 180ms $hypr-menu-decel, opacity 140ms ease-out;
+    }
+    .notification.entering > box {
+      margin-top: -2rem;
+      opacity: 0;
+      transition: none;
+    }
+  }
+}

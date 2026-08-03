@@ -53,3 +53,4 @@ hl.layer_rule({ match = { namespace = "noanim" }, no_anim = true })
 hl.layer_rule({ match = { namespace = "gtk-layer-shell" }, ignore_alpha = 0 }) -- ags astal
 hl.layer_rule({ match = { namespace = "launcher" }, ignore_alpha = 0.5 })
 hl.layer_rule({ match = { namespace = "notifications" }, ignore_alpha = 0.69 })
+hl.layer_rule({ match = { namespace = "notification-center" }, no_anim = true }) -- handles itself in its css
