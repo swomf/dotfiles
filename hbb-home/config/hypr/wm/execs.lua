@@ -4,6 +4,7 @@ hl.on("hyprland.start", function()
 
   hl.exec_cmd("sleep 1 && gentoo-pipewire-launcher")
   hl.exec_cmd("sleep 2 && ags run")
+  hl.exec_cmd("sleep 4 && /usr/libexec/evolution-data-server/evolution-alarm-notify")
 
   -- Input method
   -- hl.exec_cmd("fcitx5")
