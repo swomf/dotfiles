@@ -9,6 +9,17 @@ import { notificationCenterOpen } from "./NotificationCenter"
 // org.freedesktop.Notifications: expire-timeout of -1 lets the server pick,
 // 0 means the popup never expires on its own.
 const DEFAULT_TIMEOUT = 5000
+const EVOLUTION_TIMEOUT = 60_000
+
+const popupTimeout = (n: Notifd.Notification) => {
+  const sender = `${n.appName} ${n.desktopEntry}`.toLowerCase()
+
+  if (sender.includes("evolution") ||
+      sender.includes("events and tasks reminders"))
+    return EVOLUTION_TIMEOUT
+
+  return n.expireTimeout < 0 ? DEFAULT_TIMEOUT : n.expireTimeout
+}
 
 export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
   const { TOP, RIGHT } = Astal.WindowAnchor
@@ -39,7 +50,7 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
   const arm = (n: Notifd.Notification) => {
     clearTimer(n.id)
     if (n.urgency === Notifd.Urgency.CRITICAL) return
-    const timeout = n.expireTimeout < 0 ? DEFAULT_TIMEOUT : n.expireTimeout
+    const timeout = popupTimeout(n)
     if (timeout <= 0) return
 
     timers.set(n.id, GLib.timeout_add(GLib.PRIORITY_DEFAULT, timeout, () => {
