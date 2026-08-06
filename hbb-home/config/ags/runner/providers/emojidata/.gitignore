@@ -2,6 +2,8 @@
 # so this doesnt need to be in-tree
 emoji-data.generated
 
+# emojibase download
+unpkg
 
 # python again
 svg
