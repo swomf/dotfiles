@@ -28,6 +28,12 @@ with open(output, "w") as f:
         seen = []
         for t in terms:
             t = t.lower().replace("_", " ").replace("-", " ").strip()
+            # there are a lot of mysterious bullshit numbers to remove
+            # clocks are ok since clock120 exists btw
+            # button numbers are still searchable
+            # red 100, button 1234 is ok
+            if t.isdigit() and t not in ("100", "1234"):
+                continue
             if t and t not in seen:
                 seen.append(t)
         print(item["emoji"], " ".join(seen), file=f)
