@@ -4,13 +4,18 @@ import json
 from pathlib import Path
 from urllib.request import urlopen
 
-url = "https://unpkg.com/emojibase-data@17.0.0/en"
+package = "emojibase-data@17.0.0/en"
 output = Path(__file__).resolve().with_name("emoji-data.generated")
 
 
 def get_json(path):
-    with urlopen(f"{url}/{path}") as response:
-        return json.load(response)
+    cached = output.parent / "unpkg" / package / path
+    if not cached.exists():
+        cached.parent.mkdir(parents=True, exist_ok=True)
+        with urlopen(f"https://unpkg.com/{package}/{path}") as response:
+            cached.write_bytes(response.read())
+        print(f"Downloaded {cached}")
+    return json.loads(cached.read_bytes())
 
 
 emojis = get_json("data.json")
