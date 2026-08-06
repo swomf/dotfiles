@@ -8,6 +8,17 @@ import { centerOpen } from "./NotificationCenter"
 
 // https://specifications.freedesktop.org/notification/latest/protocol.html
 const DEFAULT_TIMEOUT = 5000
+const EVOLUTION_TIMEOUT = 60_000
+
+const popupTimeout = (n: Notifd.Notification) => {
+  const sender = `${n.appName} ${n.desktopEntry}`.toLowerCase()
+
+  if (sender.includes("evolution") ||
+      sender.includes("events and tasks reminders"))
+    return EVOLUTION_TIMEOUT
+
+  return n.expireTimeout < 0 ? DEFAULT_TIMEOUT : n.expireTimeout
+}
 
 export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
   const { TOP, RIGHT } = Astal.WindowAnchor
@@ -40,7 +51,7 @@ export default function NotificationPopups(gdkmonitor: Gdk.Monitor) {
     clearTimer(notif.id)
     // https://specifications.freedesktop.org/notification/latest/urgency-levels.html
     if (notif.urgency === Notifd.Urgency.CRITICAL) return
-    const timeout = notif.expireTimeout < 0 ? DEFAULT_TIMEOUT : notif.expireTimeout
+    const timeout = popupTimeout(notif)
     if (timeout <= 0) return
 
     timers.set(notif.id, GLib.timeout_add(GLib.PRIORITY_DEFAULT, timeout, () => {
