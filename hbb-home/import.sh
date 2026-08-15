@@ -19,6 +19,7 @@ home_dots=(
   ".config/nvim/snippets"
   ".config/zathura"
   ".zshrc"
+  ".eixrc"
 )
 
 etc_configs=(

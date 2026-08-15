@@ -1,0 +1,4 @@
+# eix has a rule to do 256 colors if the terminal supports it.
+# but that doesn't catch foot terminal.
+# i don't want it to catch kitty terminal for when i start using it.
+TERM_ALT1=""
