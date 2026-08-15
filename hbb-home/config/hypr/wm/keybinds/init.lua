@@ -22,8 +22,8 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl set '8-'"), { lo
 
 -- Note: for VSCode you need to place "password-store: gnome" in ~/.vscode/argv.json
 -- hl.bind("SUPER + C", hl.dsp.exec_cmd("code --password-store=gnome-libsecret --enable-features=UseOzonePlatform --ozone-platform=wayland"))
-hl.bind("SUPER + T",             hl.dsp.exec_cmd('foot --working-directory "$(~/.config/hypr/executable/hyprcwd)"'))
-hl.bind("CTRL + ALT + T",        hl.dsp.exec_cmd('kitty --directory "$(~/.config/hypr/executable/hyprcwd)"'))
+hl.bind("CTRL + ALT + T",        hl.dsp.exec_cmd('foot --working-directory "$(~/.config/hypr/executable/hyprcwd)"'))
+hl.bind("SUPER + T",             hl.dsp.exec_cmd('kitty --single-instance --directory "$(~/.config/hypr/executable/hyprkittycwd)"'))
 -- hl.bind("SUPER + E",          hl.dsp.exec_cmd("nautilus --new-window"))
 hl.bind("SUPER + E",             hl.dsp.exec_cmd('nemo "$(~/.config/hypr/executable/hyprcwd)"'))
 hl.bind("SUPER + F",             hl.dsp.exec_cmd("firefox || firefox-bin"))

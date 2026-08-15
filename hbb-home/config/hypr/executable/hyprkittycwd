@@ -1,0 +1,32 @@
+#!/usr/bin/env sh
+
+# i use kitty single instance so hyprcwd won't quite work.
+# instead i ask kitty. my kitty.conf has
+#       listen_on unix:/tmp/kitty
+# which creates /tmp/kitty-<PID> for the instance,
+# so i just ask it there directly and have a kitten identify the window.
+
+fallback="$HOME"
+
+win="$(hyprctl activewindow -j 2>/dev/null)" || exec echo "$fallback"
+
+class="$(printf '%s' "$win" | jq -r '.class // empty')"
+pid="$(printf '%s' "$win" | jq -r '.pid // empty')"
+
+case "$class" in
+kitty)
+  sock="/tmp/kitty-$pid"
+  [ -S "$sock" ] || exec "$(dirname "$0")/hyprcwd"
+  dir="$(kitten @ --to "unix:$sock" ls 2>/dev/null | jq -r '
+            .[] | select(.is_focused)
+            | .tabs[] | select(.is_focused)
+            | .windows[] | select(.is_focused)
+            | .cwd // empty' | head -n 1)"
+  ;;
+*)
+  # anything else: defer to the /proc-walking version
+  exec "$(dirname "$0")/hyprcwd"
+  ;;
+esac
+
+[ -n "$dir" ] && [ -d "$dir" ] && echo "$dir" || echo "$fallback"
