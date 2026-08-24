@@ -9,7 +9,7 @@ send_to_workspace: sends focused app to the found workspace instead
 
 --]]
 
-local workspacer = require("wm.keybinds.workspaces")
+local workspacer = require("wm.keybinds.grid-workspaces")
 
 -- expects exact name
 local function goto_app(app, class, send_to_workspace)
