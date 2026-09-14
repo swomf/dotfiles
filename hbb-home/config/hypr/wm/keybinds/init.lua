@@ -3,6 +3,7 @@ require("wm.keybinds.pocket-femtanyl")
 require("wm.keybinds.spin-monitor")
 require("wm.keybinds.floating-windows")
 require("wm.keybinds.goto-app")
+require("wm.keybinds.bring-app")
 require("wm.keybinds.fullscreen")
 
 -- stylua: ignore start
