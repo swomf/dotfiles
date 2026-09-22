@@ -5,6 +5,7 @@ import Notifd from "gi://AstalNotifd"
 import style from "./style.scss"
 import Bar from "./widget/Bar"
 import NotificationPopups from "./notifications/NotificationPopups"
+import { configureNotificationPersistence } from "./notifications/persistence"
 import NotificationCenter, { showCenter } from "./notifications/NotificationCenter"
 import Runner, { openRunner } from "./runner/Runner"
 
@@ -47,7 +48,7 @@ app.start({
     const supported = caps.filter(cap => cap !== "body-images" && cap !== "sound")
     if (supported.length !== caps.length) settings.set_strv(key, supported)
 
-    Notifd.get_default().ignoreTimeout = true // popups expire separately from history
+    app.connect("shutdown", configureNotificationPersistence())
     const monitors = app.get_monitors()
     monitors.map(Bar)
     monitors.map(NotificationPopups)
