@@ -38,7 +38,7 @@ hl.bind("SHIFT + SUPER + ALT + Q", hl.dsp.exec_cmd("hyprctl kill"))
 -- Screenshot, Record, OCR, Color picker, Clipboard history
 -- slurp picks the region, grim screenshots a geometry, swappy edits a picture
 hl.bind("Print",         hl.dsp.exec_cmd('grim -g "$(slurp)" - | swappy -f -'))
-hl.bind("CTRL + Print",  hl.dsp.exec_cmd('grim - | wl-copy && notify-send "Screenshot copied to clipboard" "grim - | wl-copy" --app-name="screenshot" -t 2000'))
+hl.bind("CTRL + Print",  hl.dsp.exec_cmd('grim - | wl-copy && notify-send "Screenshot copied to clipboard" "grim - | wl-copy" --app-name="screenshot" -e -t 2000'))
 hl.bind("SUPER + V",     hl.dsp.exec_cmd("cliphist list | ~/.config/ags/runner/choose | cliphist decode | wl-copy"))
 hl.bind("SUPER + CTRL + V", hl.dsp.exec_cmd("cliphist list | ~/.config/ags/runner/choose | cliphist decode | swappy -f -"))
 hl.bind("SHIFT + Print", hl.dsp.exec_cmd("~/.config/hypr/executable/post-hoc-screenshot"))
