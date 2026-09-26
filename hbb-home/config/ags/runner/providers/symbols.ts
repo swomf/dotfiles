@@ -77,6 +77,24 @@ export function searchSymbols(query: string, offset: number, limit: number): Run
   if (!query) return []
 
   const entries = symbols ??= loadSymbols() // massive, use only if needed
+  // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Regular_expressions/Unicode_character_class_escape
+  if (/\P{ASCII}/u.test(query)) {
+    if (offset || !limit) return []
+    const names: string[] = []
+    const labels: string[] = []
+    for (const char of query) {
+      const label = "U+" + char.codePointAt(0)!.toString(16).toUpperCase().padStart(4, "0")
+      labels.push(label)
+      names.push(entries.find(entry => entry.char === char)?.name ?? label)
+    }
+    return [{
+      glyph: query,
+      title: names.join(" + "),
+      description: labels.join(" "),
+      action: { kind: "copy", text: query },
+    }]
+  }
+
   const lower = query.toLowerCase()
   const mask = letterMask(lower)
   const caseSensitive = query !== lower

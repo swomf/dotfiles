@@ -7,6 +7,7 @@ ags request runner
 - plain text = app launch
 - `=2 cups to ml` = unit calc+convert (needs rink)
 - `;greek small alpha` = unicode search
+- `;<pasted unicode>` = identify the unicode character (if input is nonascii)
 - `:fr hello world` = auto-detect and translate to French
 - `:en>ja hello world` = translate from English to Japanese
 - `:def word` = dictionaryapi.dev lookup
