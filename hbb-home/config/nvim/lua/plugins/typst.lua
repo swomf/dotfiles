@@ -14,4 +14,15 @@ return {
       },
     },
   },
+  {
+    "chomosuke/typst-preview.nvim",
+    opts = {
+      -- 127.0.0.1 css override should have
+      -- #typst-app.invert-colors .typst-doc {
+      -- filter: invert(1) hue-rotate(180deg) !important;
+      -- }
+      -- for true black bg.
+      invert_colors = "always",
+    },
+  },
 }
